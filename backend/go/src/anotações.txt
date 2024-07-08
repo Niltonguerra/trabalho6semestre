@@ -1,0 +1,7 @@
+comando para rodar um projeto no docker:
+  docker run -p 8081:8081 nome-da-imagem
+
+  exemplo para o projeto corrente:
+    docker run -p 8081:8081 projeto-6-semestre-modulo-go
+
+ docker build -t projeto-6-semestre-modulo-go . 

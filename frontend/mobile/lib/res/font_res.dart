@@ -14,7 +14,7 @@ class FontRes {
   static const String INTER_MEDIUM = 'Inter-Medium';
   static const String INTER_REGULAR = 'Inter-Regular';
   static const String INTER_SEMIBOLD = 'Inter-SemiBold';
-  static const String INTER_THIN = 'Inter-thin';
+  static const String INTER_THIN = 'Inter-Thin';
   static const String ROBOTO_BLACK = 'Roboto-Black';
   static const String ROBOTO_BLACKITALIC = 'Roboto-BlackItalic';
   static const String ROBOTO_BOLD = 'Roboto-Bold';

@@ -1,8 +1,5 @@
-// lib/second_screen.dart
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:mobile/core/utils/variables/colors.dart';
 
 class TestePage extends StatefulWidget {
   @override
@@ -10,55 +7,74 @@ class TestePage extends StatefulWidget {
 }
 
 class _TestePageState extends State<TestePage> {
-  List<dynamic> _users = [];
-  bool _isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-    // Carregar os dados ao iniciar a tela
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final response = await http.get(Uri.parse('http://192.168.18.28:8081/users/')); // Substitua pelo IP correto
-
-      if (response.statusCode == 200) {
-        setState(() {
-          _users = jsonDecode(response.body);
-          _isLoading = false;
-        });
-      } else {
-        throw Exception('Failed to load users');
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      print('Error loading data: $e');
-      // Tratar o erro conforme necessário
-    }
-  }
+  final List<String> items = List.generate(7, (index) => 'Item $index');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tela de Testes'),
+        iconTheme: IconThemeData(
+          color: primaryColor, // Defina a cor que você deseja para a seta de voltar
+        ),
+        title: Text('tela de teste', style: TextStyle(color: fourthColor)),
+        backgroundColor: fivethColor,
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: _users.length,
+
+
+
+      body: ListView.builder(
+        itemCount: items.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_users[index]['name']),
-            subtitle: Text(_users[index]['email']),
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.star, color: primaryColor),
+                      SizedBox(width: 10),
+                      Text(
+                        items[index],
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Subtítulo: Página inicial',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Descrição: Esta é uma descrição adicional para o ${items[index]}.',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          print('Ação 1 para ${items[index]}');
+                        },
+                        child: Text('Ação 1', style: TextStyle(color: primaryColor)),
+                      ),
+                      SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () {
+                          print('Ação 2 para ${items[index]}');
+                        },
+                        child: Text('Ação 2', style: TextStyle(color: primaryColor)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),

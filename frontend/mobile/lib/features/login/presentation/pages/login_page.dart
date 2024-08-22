@@ -1,9 +1,10 @@
-// lib/second_screen.dart
 import 'package:flutter/material.dart';
 import 'package:mobile/core/utils/variables/colors.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/CaixaDeTexto.dart';
+import 'package:mobile/features/login/domain/usecases/login_use_case.dart';
+import 'package:mobile/features/login/presentation/widgets/error_dialog.dart';
 import 'package:mobile/res/font_res.dart';
-import 'package:http/http.dart' as http; // Adicione esta importação
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,103 +15,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Função para enviar os dados para a API
-  Future<void> _login() async {
-    final String email = _emailController.text;
-    final String password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      _showErrorDialog('Por favor, preencha todos os campos.');
-      return;
-    }
-
-    try {
-      final response = await http.post(
-        Uri.parse('https://sua-api.com/login'), // Substitua pela URL da sua API
-        headers: {'Content-Type': 'application/json'},
-        body: {
-          'email': email,
-          'password': password,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        // Sucesso
-        Navigator.pushNamed(context, '/second');
-      } else {
-        // Falha
-        _showErrorDialog('Falha no login. Verifique suas credenciais.');
-      }
-    } catch (e) {
-      _showErrorDialog('Ocorreu um erro. Tente novamente.');
-    }
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Função para exibir um diálogo de erro
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Erro'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Login'),
-      // ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -128,29 +35,24 @@ class _LoginPageState extends State<LoginPage> {
                 'LOGIN',
                 style: TextStyle(fontFamily: FontRes.INTER_REGULAR, fontSize: 40),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(height: 20),
-                  CaixaDeTexto(
-                    controller: _emailController,
-                    labelText: 'Email:',
-                  ),
-                  SizedBox(height: 20),
-                  CaixaDeTexto(
-                    controller: _passwordController,
-                    labelText: 'Senha:',
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'esqueceu a senha?',
-                    style: TextStyle(fontFamily: FontRes.ROBOTO_REGULAR, fontSize: 15),
-                  ),
-                ],
+              SizedBox(height: 20),
+              CaixaDeTexto(
+                controller: _emailController,
+                labelText: 'Email:',
+              ),
+              SizedBox(height: 20),
+              CaixaDeTexto(
+                controller: _passwordController,
+                labelText: 'Senha:',
+              ),
+              SizedBox(height: 20),
+              Text(
+                'esqueceu a senha?',
+                style: TextStyle(fontFamily: FontRes.ROBOTO_REGULAR, fontSize: 15),
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _login,
+                onPressed: () => _login(),
                 child: Text(
                   'Entrar!',
                   style: TextStyle(fontFamily: FontRes.INTER_REGULAR),
@@ -165,14 +67,46 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 20),
-              Text(
-                'novo por aqui? cadastre-se',
-                style: TextStyle(fontFamily: FontRes.ROBOTO_REGULAR, fontSize: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'novo por aqui? cadastre-se',
+                    style: TextStyle(fontFamily: FontRes.ROBOTO_REGULAR, fontSize: 15),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/cadastroUsuario');
+                    },
+                    child: Text(
+                      'cadastre-se',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: FontRes.ROBOTO_REGULAR,
+                        color: secondaryColor, // Cor do texto
+                      ),
+                    ),
+                  ),
+                ],
               ),
+
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _login() async {
+    final result = await loginUseCase(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+
+    if (result) {
+      Navigator.pushNamed(context, '/second');
+    } else {
+      showErrorDialog(context, 'Falha no login. Verifique suas credenciais.');
+    }
   }
 }

@@ -4,7 +4,7 @@ export declare class CriaUsuarioDTO {
     telefone: string;
     nome: string;
     foto: string;
-    data_nasc: Date;
+    data_nascimento: Date;
     endereco: string[];
-    tags: string[];
+    CPF: string;
 }

@@ -1,28 +1,32 @@
 export class ListaUsuarioDTO {
+  data_nascimento: Date;
+  foto: string;
+  avaliacao_como_cliente: Number;
+  historico_de_viagens: string[];
+  endereco: string[];
   nome: string;
   email: string;
   telefone: string;
-  foto: string;
-  data_nasc: Date;
-  tags: string[];
-  historico: string[];
-  endereco: string[];
 }
 
 export class ListaUsuarioCompletoDTO {
   _id:string;
-  senha:string;
+  CPF: string;
+  data_nascimento: Date;
+  foto: string;
+  avaliacao_como_cliente: Number;
+  historico_de_viagens: string[];
+  endereco: string[];
+  tipo_conta: string;
   nome: string;
   email: string;
+  senha: string;
   telefone: string;
-  foto: string;
-  data_nasc: Date;
-  tags: string[];
-  tipo_de_conta: string;
-  historico: string[];
-  endereco: string[];
+  criado_em: Date;
+  modificado_em: Date;
+  usuario_ativo: boolean;
+  usuario_confirmado: boolean;
 }
-
 
 
 export class ListaUsuarioRetorno {

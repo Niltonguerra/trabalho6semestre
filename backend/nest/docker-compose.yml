@@ -1,11 +1,21 @@
-version: '3.8'  # Especifique a versão do docker-compose
-
+version: "3.8"
 services:
-  app:
-    build:
-      context: .  # Diretório onde o Dockerfile está localizado
+  redis:
+    image: redis:alpine
+    container_name: redis
     ports:
-      - "3100:3100"  # Mapeia a porta 3100 do container para a porta 3100 do host
+      - "6379:6379"
+
+  app:
+    build: .
+    container_name: nest-app
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - "3100:3100"
     volumes:
-      - .:/app  # Mapeia o diretório atual para o diretório /app no container
-    command: npm run dev  # Comando para iniciar o aplicativo
+      - .:/app
+    command: npm run dev

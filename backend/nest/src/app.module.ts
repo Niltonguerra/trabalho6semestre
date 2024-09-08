@@ -10,8 +10,7 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { AuthModule } from './modules/user/submodules/auth-user/auth.module';
 import { RecomendacaoModule } from './modules/recomendacao/recomendacao.module';
 import { AuthStoreModule } from './modules/store/submodules/auth-store/auth-store.module';
-
-
+import { RedisModule } from './modules/redis/redis.module';
 
 const mongoUri = process.env.NODE_ENV === 'production'
   ? process.env.MONGO_URI_PROD
@@ -27,6 +26,7 @@ const mongoUri = process.env.NODE_ENV === 'production'
     AuthModule,
     RecomendacaoModule,
     AuthStoreModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [

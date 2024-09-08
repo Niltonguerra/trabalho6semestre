@@ -16,6 +16,7 @@ const upper_case_decorator_1 = require("../decorator/upper-case.decorator");
 const lower_case_decorator_1 = require("../decorator/lower-case.decorator");
 const number_decorator_1 = require("../decorator/number.decorator");
 const Date_decorator_1 = require("../decorator/Date.decorator");
+const isCPF_decorator_1 = require("../decorator/isCPF.decorator");
 class CriaUsuarioDTO {
 }
 exports.CriaUsuarioDTO = CriaUsuarioDTO;
@@ -52,15 +53,14 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'A data de nascimento não pode ser vazio' }),
     (0, Date_decorator_1.IsDateFormat)(),
     __metadata("design:type", Date)
-], CriaUsuarioDTO.prototype, "data_nasc", void 0);
+], CriaUsuarioDTO.prototype, "data_nascimento", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'O endereço não pode ser vazio' }),
     (0, class_validator_1.IsString)({ message: 'o Endereço deve ser uma string' }),
     __metadata("design:type", Array)
 ], CriaUsuarioDTO.prototype, "endereco", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)({ message: 'As tags não podem ser vazias' }),
-    (0, class_validator_1.IsArray)({ message: 'As tags devem ser strings' }),
-    __metadata("design:type", Array)
-], CriaUsuarioDTO.prototype, "tags", void 0);
+    (0, isCPF_decorator_1.IsCPF)({ message: 'Invalid CPF format' }),
+    __metadata("design:type", String)
+], CriaUsuarioDTO.prototype, "CPF", void 0);
 //# sourceMappingURL=CriaUsuario.dto.js.map

@@ -19,6 +19,7 @@ const payment_module_1 = require("./modules/payment/payment.module");
 const auth_module_1 = require("./modules/user/submodules/auth-user/auth.module");
 const recomendacao_module_1 = require("./modules/recomendacao/recomendacao.module");
 const auth_store_module_1 = require("./modules/store/submodules/auth-store/auth-store.module");
+const redis_module_1 = require("./modules/redis/redis.module");
 const mongoUri = process.env.NODE_ENV === 'production'
     ? process.env.MONGO_URI_PROD
     : process.env.MONGO_URI_TEST;
@@ -36,6 +37,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             recomendacao_module_1.RecomendacaoModule,
             auth_store_module_1.AuthStoreModule,
+            redis_module_1.RedisModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

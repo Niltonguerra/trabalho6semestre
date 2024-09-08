@@ -22,6 +22,38 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ type: String }),
     __metadata("design:type", String)
+], User.prototype, "CPF", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date }),
+    __metadata("design:type", Date)
+], User.prototype, "data_nascimento", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String }),
+    __metadata("design:type", String)
+], User.prototype, "foto", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Number }),
+    __metadata("design:type", Number)
+], User.prototype, "avaliacao_como_cliente", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [String] }),
+    __metadata("design:type", Array)
+], User.prototype, "historico_de_viagens", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [String] }),
+    __metadata("design:type", Array)
+], User.prototype, "endereco", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String, required: true }),
+    __metadata("design:type", String)
+], User.prototype, "tipo_conta", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String }),
+    __metadata("design:type", String)
+], User.prototype, "nome", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String }),
+    __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: String }),
@@ -32,49 +64,21 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "telefone", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String }),
-    __metadata("design:type", String)
-], User.prototype, "nome", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: String }),
-    __metadata("design:type", String)
-], User.prototype, "foto", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Date }),
-    __metadata("design:type", Date)
-], User.prototype, "data_nasc", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [String] }),
-    __metadata("design:type", Array)
-], User.prototype, "tags", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [String] }),
-    __metadata("design:type", Array)
-], User.prototype, "historico", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [String] }),
-    __metadata("design:type", Array)
-], User.prototype, "endereco", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Boolean }),
-    __metadata("design:type", Boolean)
-], User.prototype, "confirmado", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Boolean }),
-    __metadata("design:type", Boolean)
-], User.prototype, "usuario_ativo", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: String, required: true }),
-    __metadata("design:type", String)
-], User.prototype, "tipo_de_conta", void 0);
-__decorate([
     (0, mongoose_1.Prop)({ type: Date, required: false }),
     __metadata("design:type", Date)
 ], User.prototype, "criado_em", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Date, required: false }),
     __metadata("design:type", Date)
-], User.prototype, "atualizado_em", void 0);
+], User.prototype, "modificado_em", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Boolean }),
+    __metadata("design:type", Boolean)
+], User.prototype, "usuario_ativo", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Boolean }),
+    __metadata("design:type", Boolean)
+], User.prototype, "usuario_confirmado", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)()
 ], User);

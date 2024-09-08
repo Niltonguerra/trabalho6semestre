@@ -5,6 +5,7 @@ import { ContainsUppercase } from '../decorator/upper-case.decorator';
 import { ContainsLowercase } from '../decorator/lower-case.decorator';
 import { ContainsNumber } from '../decorator/number.decorator';
 import { IsDateFormat } from '../decorator/Date.decorator';
+import { IsCPF } from '../decorator/isCPF.decorator';
 
 
 
@@ -46,16 +47,28 @@ export class CriaUsuarioDTO {
 
   @IsNotEmpty({ message: 'A data de nascimento não pode ser vazio' })
   @IsDateFormat()
-  data_nasc: Date;
+  data_nascimento: Date;
 
   @IsNotEmpty({ message: 'O endereço não pode ser vazio' })
   @IsString({ message: 'o Endereço deve ser uma string'})
   endereco: string[];
 
+  @IsCPF({ message: 'Invalid CPF format' })
+  CPF: string;
 
-  @IsNotEmpty({ message: 'As tags não podem ser vazias' })
-  @IsArray({ message: 'As tags devem ser strings'})
-  tags: string[];
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 

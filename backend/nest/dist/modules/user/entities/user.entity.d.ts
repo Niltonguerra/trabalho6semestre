@@ -26,20 +26,21 @@
 import mongoose from 'mongoose';
 export declare class User {
     _id?: mongoose.Types.ObjectId;
+    CPF: string;
+    data_nascimento: Date;
+    foto: string;
+    avaliacao_como_cliente: Number;
+    historico_de_viagens: string[];
+    endereco: string[];
+    tipo_conta: string;
+    nome: string;
     email: string;
     senha: string;
     telefone: string;
-    nome: string;
-    foto: string;
-    data_nasc: Date;
-    tags: string[];
-    historico: string[];
-    endereco: string[];
-    confirmado: boolean;
-    usuario_ativo: boolean;
-    tipo_de_conta: string;
     criado_em: Date;
-    atualizado_em: Date;
+    modificado_em: Date;
+    usuario_ativo: boolean;
+    usuario_confirmado: boolean;
 }
 export declare const UserSchema: mongoose.Schema<User, mongoose.Model<User, any, any, any, mongoose.Document<unknown, any, User> & User & Required<{
     _id: mongoose.Types.ObjectId;

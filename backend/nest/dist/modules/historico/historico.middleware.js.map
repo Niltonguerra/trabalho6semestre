@@ -1,1 +1,0 @@
-{"version":3,"file":"historico.middleware.js","sourceRoot":"","sources":["../../../src/modules/historico/historico.middleware.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAA4D;AAGrD,IAAM,mBAAmB,GAAzB,MAAM,mBAAmB;IAC9B,GAAG,CAAC,GAAQ,EAAE,GAAQ,EAAE,IAAgB;QACtC,IAAI,EAAE,CAAC;IACT,CAAC;CACF,CAAA;AAJY,kDAAmB;8BAAnB,mBAAmB;IAD/B,IAAA,mBAAU,GAAE;GACA,mBAAmB,CAI/B"}

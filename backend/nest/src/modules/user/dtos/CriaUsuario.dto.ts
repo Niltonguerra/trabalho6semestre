@@ -56,20 +56,6 @@ export class CriaUsuarioDTO {
   @IsCPF({ message: 'Invalid CPF format' })
   CPF: string;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 

@@ -8,7 +8,6 @@ import { StoreModule } from './modules/store/store.module';
 import { APP_PIPE } from '@nestjs/core';
 import { PaymentModule } from './modules/payment/payment.module';
 import { AuthModule } from './modules/user/submodules/auth-user/auth.module';
-import { RecomendacaoModule } from './modules/recomendacao/recomendacao.module';
 import { AuthStoreModule } from './modules/store/submodules/auth-store/auth-store.module';
 import { RedisModule } from './modules/redis/redis.module';
 
@@ -24,7 +23,6 @@ const mongoUri = process.env.NODE_ENV === 'production'
     StoreModule,
     PaymentModule,
     AuthModule,
-    RecomendacaoModule,
     AuthStoreModule,
     RedisModule,
   ],

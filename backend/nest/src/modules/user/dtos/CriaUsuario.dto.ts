@@ -1,4 +1,4 @@
-import { IsArray, IsDate, isDate, IsEmail, IsNotEmpty, IsString, IsUrl, MaxLength, MinLength } from 'class-validator';
+import { IsArray, IsDate, isDate, IsEmail, IsNotEmpty, IsNumber, IsString, IsUrl, MaxLength, MinLength } from 'class-validator';
 import { IsTelefone } from '../decorator/telefone-brasil.decorator';
 import { EmailEhUnico } from '../decorator/email-eh-unico.decorator';
 import { ContainsUppercase } from '../decorator/upper-case.decorator';
@@ -15,7 +15,6 @@ export class CriaUsuarioDTO {
   // @EmailEhUnico({ message: 'O e-mail informado já está em uso' })
   @IsEmail({}, { message: 'O email informado é inválido' })
   @IsNotEmpty({ message: 'O email não pode ser vazio' })
-  // @EmailEhUnico({ message: 'O email informado já está cadastrado' })
   email: string;
 
 
@@ -53,7 +52,10 @@ export class CriaUsuarioDTO {
   @IsString({ message: 'o Endereço deve ser uma string'})
   endereco: string[];
 
-  @IsCPF({ message: 'Invalid CPF format' })
+  
+  @IsNotEmpty({ message: 'O CPF não pode ser vazio' })
+  @IsString({ message: 'o CPF deve ser uma string'})
+  @IsCPF({ message: 'CPF inválido' })
   CPF: string;
 
 }

@@ -1,0 +1,11 @@
+version: '3.8'  # Especifique a versão do docker-compose
+
+services:
+  app:
+    build:
+      context: .  # Diretório onde o Dockerfile está localizado
+    ports:
+      - "3100:3100"  # Mapeia a porta 3100 do container para a porta 3100 do host
+    volumes:
+      - .:/app  # Mapeia o diretório atual para o diretório /app no container
+    command: npm run dev  # Comando para iniciar o aplicativo

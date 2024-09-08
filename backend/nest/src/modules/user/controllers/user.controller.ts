@@ -3,11 +3,11 @@ import { UserService } from '../services/user.service';
 import { User } from '../entities/user.entity';
 import { CriaUsuarioDTO } from '../dtos/CriaUsuario.dto';
 import { HashPasswordPipe } from '../pipes/passwordEncryption.pipe';
-import { ListaUsuarioDTO, ListaUsuarioRetorno} from '../dtos/ListaUsuario.dto';
+import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetorno} from '../dtos/ListaUsuario.dto';
 import { RolesGuardUser } from 'src/modules/user/submodules/auth-user/guards/roles-user.guard';
 import { JwtStrategyUser } from 'src/modules/user/submodules/auth-user/strategies/jwt-user.strategy';
 import { JwtAuthGuardUser } from 'src/modules/user/submodules/auth-user/guards/jwt-auth-user.guard';
-import { AtualizaUsuarioDTO } from '../dtos/AtualizaUsuario.dto';
+import { DadosUsuarioAtualizarDTO } from '../dtos/AtualizaUsuario.dto';
 
 
 @Controller('user')
@@ -21,9 +21,9 @@ export class UserController {
   async findByField( 
     @Param('campo') campo: string, @Param('valor') valor: string,
     @Query('limit') limit: number ): 
-    Promise<{ resultado: ListaUsuarioDTO[]; message: string }>{
+    Promise<{ resultado: ListaUsuarioPublicoDTO[]; message: string }>{
 
-      const retorno:ListaUsuarioDTO[] = await this.service.findByField(campo, valor, limit);
+      const retorno:ListaUsuarioPublicoDTO[] = await this.service.findByField(campo, valor, limit);
 
       return {
         resultado: retorno,
@@ -33,8 +33,8 @@ export class UserController {
 
 
   @Get('todos')
-  async findAll(): Promise<{ usuario: ListaUsuarioDTO[]; message: string }> {
-    const usuario: ListaUsuarioDTO[] = await this.service.findAll();
+  async findAll(): Promise<{ usuario: ListaUsuarioPublicoDTO[]; message: string }> {
+    const usuario: ListaUsuarioPublicoDTO[] = await this.service.findAll();
     return {
       usuario,
       message: "todos os usuários encontrados com sucesso!"
@@ -47,7 +47,7 @@ export class UserController {
   async create(@Body() user: CriaUsuarioDTO): 
   Promise<{ usuario: ListaUsuarioRetorno; message: string }> {
 
-    const verificaEmail:ListaUsuarioDTO[] = await this.service.findByField('email', user.email);
+    const verificaEmail:ListaUsuarioPublicoDTO[] = await this.service.findByField('email', user.email);
 
     if (verificaEmail.length > 0) {
       throw new Error('Email já cadastrado');
@@ -65,11 +65,11 @@ export class UserController {
 // rota do usuário
   @UseGuards(JwtAuthGuardUser, RolesGuardUser)
   @Get('read')
-  async findById(@Request() req): Promise<{ usuario: ListaUsuarioDTO; message: string }> {
+  async findById(@Request() req): Promise<{ usuario: ListaUsuarioPessoalDTO; message: string }> {
 
     const userId = req.user.userId;
 
-    const usuario: ListaUsuarioDTO  = await this.service.findById(userId);
+    const usuario: ListaUsuarioPessoalDTO  = await this.service.findById(userId);
 
     return {
       usuario,
@@ -80,7 +80,7 @@ export class UserController {
   // rota do usuário
   @UseGuards(JwtAuthGuardUser, RolesGuardUser)
   @Put('update')
-  async update( @Request() req, @Body() user: AtualizaUsuarioDTO): 
+  async update( @Request() req, @Body() user: DadosUsuarioAtualizarDTO): 
   Promise<{ 
     usuario: ListaUsuarioRetorno; 
     message: string }> {

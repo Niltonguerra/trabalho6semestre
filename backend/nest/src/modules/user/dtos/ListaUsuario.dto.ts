@@ -1,4 +1,14 @@
-export class ListaUsuarioDTO {
+export class ListaUsuarioPublicoDTO {
+  nome: string;
+  foto: string;
+  avaliacao_como_cliente: Number;
+  email:string;
+  telefone: string;
+}
+
+
+export class ListaUsuarioPessoalDTO {
+  CPF: string;
   data_nascimento: Date;
   foto: string;
   avaliacao_como_cliente: Number;
@@ -7,6 +17,7 @@ export class ListaUsuarioDTO {
   nome: string;
   email: string;
   telefone: string;
+  tipo_conta: string;
 }
 
 export class ListaUsuarioCompletoDTO {

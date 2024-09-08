@@ -2,10 +2,10 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../entities/user.entity';
 import { Model } from 'mongoose';
-import { ListaUsuarioDTO, ListaUsuarioRetorno } from '../dtos/ListaUsuario.dto';
+import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetorno } from '../dtos/ListaUsuario.dto';
 import { CriaUsuarioDTO } from '../dtos/CriaUsuario.dto';
 import { LoginUsuarioInternoDTO } from 'src/modules/user/submodules/auth-user/dtos/AuthUser.dto';
-import { AtualizaUsuarioDTO } from '../dtos/AtualizaUsuario.dto';
+import { DadosUsuarioAtualizarDTO } from '../dtos/AtualizaUsuario.dto';
 
 @Injectable()
 export class UserService {
@@ -13,7 +13,7 @@ export class UserService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
 
-  async findByField(campo: string, valor: string, limit?: number):Promise<ListaUsuarioDTO[]> {
+  async findByField(campo: string, valor: string, limit?: number):Promise<ListaUsuarioPublicoDTO[]> {
     try{
       let query = {};
 
@@ -31,16 +31,13 @@ export class UserService {
         throw new Error('Erro ao buscar o usuário pelo campo informado');
       }
 
-      const retorno: ListaUsuarioDTO[] = data.map((user: ListaUsuarioDTO) => {
+      const retorno: ListaUsuarioPublicoDTO[] = data.map((user: ListaUsuarioPublicoDTO) => {
         return {
           nome: user.nome,
           email: user.email,
           telefone: user.telefone,
           foto: user.foto,
-          data_nasc: user.data_nasc,
-          tags: user.tags,
-          historico: user.historico,
-          endereco: user.endereco,
+          avaliacao_como_cliente: user.avaliacao_como_cliente,
         };
       });
 
@@ -85,7 +82,7 @@ export class UserService {
 
 
 
-  async create(user: Partial<User>):Promise<ListaUsuarioRetorno> {
+  async create(user: CriaUsuarioDTO):Promise<ListaUsuarioRetorno> {
   try{
 
     const newUser:User = {
@@ -94,15 +91,16 @@ export class UserService {
       senha: user.senha,
       telefone: user.telefone,
       foto: user.foto,
-      data_nasc: user.data_nasc,
-      tags: user.tags,
+      data_nascimento: user.data_nascimento,
       endereco: user.endereco,
       usuario_ativo: true,
-      tipo_de_conta: 'usuario',
-      confirmado: false,
-      historico: [],
+      tipo_conta: 'usuario',
+      usuario_confirmado: false,
+      historico_de_viagens: [],
       criado_em: new Date(),
-      atualizado_em: new Date(),
+      avaliacao_como_cliente: 0,
+      CPF: '',
+      modificado_em: new Date(),
     };
 
     const data: User | null = await new this.userModel(newUser).save();
@@ -126,7 +124,7 @@ export class UserService {
 
 
 
-  async findAll(): Promise<ListaUsuarioDTO[]> {
+  async findAll(): Promise<ListaUsuarioPublicoDTO[]> {
     try {
       const data: User[] | null = await this.userModel.find().exec();
   
@@ -135,16 +133,13 @@ export class UserService {
         throw new Error('Erro ao buscar todos os usuários');
       }
 
-      const retorno: ListaUsuarioDTO[] = data.map((user: ListaUsuarioDTO) => {
+      const retorno: ListaUsuarioPublicoDTO[] = data.map((user: ListaUsuarioPublicoDTO) => {
         return {
           nome: user.nome,
           email: user.email,
           telefone: user.telefone,
           foto: user.foto,
-          data_nasc: user.data_nasc,
-          tags: user.tags,
-          historico: user.historico,
-          endereco: user.endereco,
+          avaliacao_como_cliente: user.avaliacao_como_cliente,
         };
       });
 
@@ -162,7 +157,7 @@ export class UserService {
 
 
 
-  async findById(id: string):  Promise <ListaUsuarioDTO | null> {
+  async findById(id: string):  Promise <ListaUsuarioPessoalDTO | null> {
     try {
       const user: User | null = await this.userModel.findById(id).exec();
       
@@ -170,15 +165,17 @@ export class UserService {
         throw new Error('Erro, não foi possivel encontrar o usuário pelo id informado');
       }
 
-      const retorno:ListaUsuarioDTO = {
+      const retorno:ListaUsuarioPessoalDTO = {
         nome: user.nome,
         email: user.email,
         telefone: user.telefone,
         foto: user.foto,
-        data_nasc: user.data_nasc,
-        tags: user.tags,
-        historico: user.historico,
+        data_nascimento: user.data_nascimento,
         endereco: user.endereco,
+        avaliacao_como_cliente: user.avaliacao_como_cliente,
+        historico_de_viagens: user.historico_de_viagens,
+        CPF: user.CPF,
+        tipo_conta: user.tipo_conta,
       }
 
       return retorno;
@@ -193,7 +190,7 @@ export class UserService {
 
 
 
-  async update(user:AtualizaUsuarioDTO, id: string): Promise<ListaUsuarioRetorno> {
+  async update(user:DadosUsuarioAtualizarDTO, id: string): Promise<ListaUsuarioRetorno> {
     try {
       const updatedUser: User | null = await this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
       

@@ -12,12 +12,30 @@ import { IsCPF } from '../decorator/isCPF.decorator';
 
 export class CriaUsuarioDTO {
 
+  @IsNotEmpty({ message: 'O CPF não pode ser vazio' })
+  @IsString({ message: 'o CPF deve ser uma string'})
+  @IsCPF({ message: 'CPF inválido' })
+  CPF: string;
+
+  @IsNotEmpty({ message: 'A data de nascimento não pode ser vazio' })
+  @IsDateFormat()
+  data_nascimento: Date;
+
+  @IsUrl({}, { message: 'A foto deve ser uma URL válida' })
+  foto: string;
+
+  @IsNotEmpty({ message: 'O endereço não pode ser vazio' })
+  @IsString({ message: 'o Endereço deve ser uma string'})
+  endereco: string[];
+
+  @MaxLength(40, { message: 'seu nome é muito grande, deve ter no máximo 70 caracteres' })
+  @IsNotEmpty({ message: 'O nome não pode ser vazio' })
+  nome: string;
+
   // @EmailEhUnico({ message: 'O e-mail informado já está em uso' })
   @IsEmail({}, { message: 'O email informado é inválido' })
   @IsNotEmpty({ message: 'O email não pode ser vazio' })
   email: string;
-
-
 
   @ContainsLowercase(2,{ message: 'A senha deve ter 2 letras minúsculas no mínimo'})
   @ContainsUppercase(2,{ message: 'A senha deve ter 2 letras maiúsculas no mínimo'})
@@ -28,35 +46,9 @@ export class CriaUsuarioDTO {
   @ContainsNumber(2, { message: 'A senha precisa ter pelo menos 2 números'})
   senha: string;
 
-
   @IsTelefone({ message: 'O telefone informado é inválido' })
   @IsNotEmpty({ message: 'O telefone não pode ser vazio' })
   telefone: string;
-
-
-
-  @MaxLength(40, { message: 'seu nome é muito grande, deve ter no máximo 70 caracteres' })
-  @IsNotEmpty({ message: 'O nome não pode ser vazio' })
-  nome: string;
-
-
-  @IsUrl({}, { message: 'A foto deve ser uma URL válida' })
-  foto: string;
-
-
-  @IsNotEmpty({ message: 'A data de nascimento não pode ser vazio' })
-  @IsDateFormat()
-  data_nascimento: Date;
-
-  @IsNotEmpty({ message: 'O endereço não pode ser vazio' })
-  @IsString({ message: 'o Endereço deve ser uma string'})
-  endereco: string[];
-
-  
-  @IsNotEmpty({ message: 'O CPF não pode ser vazio' })
-  @IsString({ message: 'o CPF deve ser uma string'})
-  @IsCPF({ message: 'CPF inválido' })
-  CPF: string;
 
 }
 

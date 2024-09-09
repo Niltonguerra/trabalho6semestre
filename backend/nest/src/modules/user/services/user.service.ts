@@ -2,10 +2,12 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../entities/user.entity';
 import { Model } from 'mongoose';
-import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetorno } from '../dtos/ListaUsuario.dto';
+import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO } from '../dtos/ListaUsuario.dto';
 import { CriaUsuarioDTO } from '../dtos/CriaUsuario.dto';
 import { LoginUsuarioInternoDTO } from 'src/modules/user/submodules/auth-user/dtos/AuthUser.dto';
-import { DadosUsuarioAtualizarDTO } from '../dtos/AtualizaUsuario.dto';
+import { DadosUsuarioAtualizarDTO } from '../dtos/DadosUsuarioAtualizar.dto';
+import { tokenSessaoDTO } from '../dtos/tokenSessao.dto';
+import {MensagemDTO } from 'src/utils/dtos/Mensagem.dto';
 
 @Injectable()
 export class UserService {
@@ -82,7 +84,7 @@ export class UserService {
 
 
 
-  async create(user: CriaUsuarioDTO):Promise<ListaUsuarioRetorno> {
+  async CriarUsuario(user: CriaUsuarioDTO):Promise<ListaUsuarioRetornoDTO> {
   try{
 
     const newUser:User = {
@@ -110,7 +112,7 @@ export class UserService {
       throw new Error('Erro ao cadastrar o usuário, por favor tente mais tarde');
     }
 
-    const retorno:ListaUsuarioRetorno = {
+    const retorno:ListaUsuarioRetornoDTO = {
       nome: data.nome,
       email: data.email,
     };
@@ -157,7 +159,7 @@ export class UserService {
 
 
 
-  async findById(id: string):  Promise <ListaUsuarioPessoalDTO | null> {
+  async ListaUmUsuarioDono(id: string):  Promise <ListaUsuarioPessoalDTO | null> {
     try {
       const user: User | null = await this.userModel.findById(id).exec();
       
@@ -187,10 +189,31 @@ export class UserService {
     }
   }
 
+  async SolicitarCarona(token: tokenSessaoDTO):Promise <MensagemDTO | null >{
+
+    return
+  }
 
 
 
-  async update(user:DadosUsuarioAtualizarDTO, id: string): Promise<ListaUsuarioRetorno> {
+  async ListaUmUsuarioPublico(nome: string):Promise <ListaUsuarioPublicoDTO | null >{
+
+    return
+  }
+
+
+  async ListaUsuarioPublico(nome: string):Promise <ListaUsuarioPublicoDTO[] | null >{
+
+    return
+  }
+
+  async ConfirmarContaUsuario(mensagem: string):Promise <MensagemDTO[] | null >{
+
+    return
+  }
+
+
+  async AtualizarUsuario(user:DadosUsuarioAtualizarDTO, id: string): Promise<ListaUsuarioRetornoDTO> {
     try {
       const updatedUser: User | null = await this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
       
@@ -198,7 +221,7 @@ export class UserService {
         throw new NotFoundException('Usuario não encontrado para realizar a atualização');
       }
 
-      const retorno: ListaUsuarioRetorno = {
+      const retorno: ListaUsuarioRetornoDTO = {
         nome: updatedUser.nome,
         email: updatedUser.email,
       };
@@ -213,7 +236,7 @@ export class UserService {
   }
 
 
-  async disable( id: string): Promise<any> {
+  async DesativarUsuario( id: string): Promise<any> {
     try {
 
       const user: Partial<User> = {
@@ -226,7 +249,7 @@ export class UserService {
         throw new NotFoundException('Usuario não encontrado para realizar a desativação');
       }
 
-      const retorno: ListaUsuarioRetorno = {
+      const retorno: ListaUsuarioRetornoDTO = {
         nome: disableUser.nome,
         email: disableUser.email,
       };

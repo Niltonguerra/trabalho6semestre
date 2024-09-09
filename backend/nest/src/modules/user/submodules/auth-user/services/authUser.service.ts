@@ -17,7 +17,7 @@ export class AuthUserService {
   ) {}
 
 
-  async UserAuthentication(authUserDTO: AuthUserDTO): Promise<{} | null> {
+  async FazerLogin(authUserDTO: AuthUserDTO): Promise<{} | null> {
     const {email, senha} = authUserDTO;
 
     const validatedUser:LoginUsuarioInternoDTO = await this.validateUser(email, senha);

@@ -3,11 +3,11 @@ import { UserService } from '../services/user.service';
 import { User } from '../entities/user.entity';
 import { CriaUsuarioDTO } from '../dtos/CriaUsuario.dto';
 import { HashPasswordPipe } from '../pipes/passwordEncryption.pipe';
-import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetorno} from '../dtos/ListaUsuario.dto';
+import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO} from '../dtos/ListaUsuario.dto';
 import { RolesGuardUser } from 'src/modules/user/submodules/auth-user/guards/roles-user.guard';
 import { JwtStrategyUser } from 'src/modules/user/submodules/auth-user/strategies/jwt-user.strategy';
 import { JwtAuthGuardUser } from 'src/modules/user/submodules/auth-user/guards/jwt-auth-user.guard';
-import { DadosUsuarioAtualizarDTO } from '../dtos/AtualizaUsuario.dto';
+import { DadosUsuarioAtualizarDTO } from '../dtos/DadosUsuarioAtualizar.dto';
 
 
 @Controller('user')
@@ -45,7 +45,7 @@ export class UserController {
   @Post('create')
   @UsePipes(new ValidationPipe(), HashPasswordPipe)
   async create(@Body() user: CriaUsuarioDTO): 
-  Promise<{ usuario: ListaUsuarioRetorno; message: string }> {
+  Promise<{ usuario: ListaUsuarioRetornoDTO; message: string }> {
 
     const verificaEmail:ListaUsuarioPublicoDTO[] = await this.service.findByField('email', user.email);
 
@@ -53,7 +53,7 @@ export class UserController {
       throw new Error('Email já cadastrado');
     }
 
-    const retorno:ListaUsuarioRetorno = await this.service.create(user);
+    const retorno:ListaUsuarioRetornoDTO = await this.service.CriarUsuario(user);
 
     return {
       usuario: retorno,
@@ -69,7 +69,7 @@ export class UserController {
 
     const userId = req.user.userId;
 
-    const usuario: ListaUsuarioPessoalDTO  = await this.service.findById(userId);
+    const usuario: ListaUsuarioPessoalDTO  = await this.service.ListaUmUsuarioDono(userId);
 
     return {
       usuario,
@@ -82,12 +82,12 @@ export class UserController {
   @Put('update')
   async update( @Request() req, @Body() user: DadosUsuarioAtualizarDTO): 
   Promise<{ 
-    usuario: ListaUsuarioRetorno; 
+    usuario: ListaUsuarioRetornoDTO; 
     message: string }> {
 
     const userId = req.user.userId;
 
-    const retorno:ListaUsuarioRetorno = await this.service.update(user, userId);
+    const retorno:ListaUsuarioRetornoDTO = await this.service.AtualizarUsuario(user, userId);
 
     return {
       usuario: retorno,
@@ -99,11 +99,11 @@ export class UserController {
   // rota do usuário
   @UseGuards(JwtAuthGuardUser, RolesGuardUser)
   @Delete('disable')
-  async remove(@Request() req): Promise<{retorno:ListaUsuarioRetorno, message: String }> {
+  async remove(@Request() req): Promise<{retorno:ListaUsuarioRetornoDTO, message: String }> {
 
     const userId = req.user.userId;
 
-    const retorno:ListaUsuarioRetorno = await this.service.disable(userId);
+    const retorno:ListaUsuarioRetornoDTO = await this.service.DesativarUsuario(userId);
 
     return {
       retorno: retorno,

@@ -12,7 +12,7 @@ export class AuthController {
 
   @Post('login')
   async loginUser(@Body() authUserDTO: AuthUserDTO) {
-    return this.authUserService.UserAuthentication(authUserDTO);
+    return this.authUserService.FazerLogin(authUserDTO);
   }
 }
 

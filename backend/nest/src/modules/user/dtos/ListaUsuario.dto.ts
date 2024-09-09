@@ -8,16 +8,16 @@ export class ListaUsuarioPublicoDTO {
 
 
 export class ListaUsuarioPessoalDTO {
+  nome: string;
   CPF: string;
   data_nascimento: Date;
   foto: string;
   avaliacao_como_cliente: Number;
   historico_de_viagens: string[];
   endereco: string[];
-  nome: string;
+  tipo_conta: string;
   email: string;
   telefone: string;
-  tipo_conta: string;
 }
 
 export class ListaUsuarioCompletoDTO {
@@ -40,7 +40,7 @@ export class ListaUsuarioCompletoDTO {
 }
 
 
-export class ListaUsuarioRetorno {
+export class ListaUsuarioRetornoDTO {
   nome: string;
   email: string;
 }

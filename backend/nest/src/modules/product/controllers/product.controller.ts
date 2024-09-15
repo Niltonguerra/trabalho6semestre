@@ -116,6 +116,9 @@ async findByField(
     };
   }
 
+
+
+  
   @UseGuards(JwtAuthGuardStore, RolesGuardStore)
   @Delete('delete')
   async remove(@Request() req) {

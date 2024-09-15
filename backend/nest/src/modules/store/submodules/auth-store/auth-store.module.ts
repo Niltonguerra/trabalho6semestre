@@ -10,15 +10,21 @@ import { RolesGuardStore } from './guards/roles-store.guard';
 import { JwtAuthGuardStore } from './guards/jwt-auth-store.guard';
 import { AuthStoreController } from './controllers/auth-store.controller';
 import { StoreSchema } from '../../entities/store.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Store', schema: StoreSchema }]),
     StoreModule,
     PassportModule,
-    JwtModule.register({
-      secret: 'FomeFacil',
-      signOptions: { expiresIn: '24h' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('SECRET_JWT_SESSION_STORE'),
+        signOptions: { expiresIn: configService.get<string>( '24h') 
+        },
+      }),
     }),
   ],
   controllers: [

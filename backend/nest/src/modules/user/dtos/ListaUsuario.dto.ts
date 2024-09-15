@@ -1,3 +1,6 @@
+import { ListaHistoricoDTO } from '../../historico/dtos/ListaHistorico.dto';
+import { HistoricoSchema } from '../../historico/entities/historico.entity';
+import { Historico } from '../../historico/decorator/historico.decorator';
 export class ListaUsuarioPublicoDTO {
   nome: string;
   foto: string;
@@ -13,7 +16,7 @@ export class ListaUsuarioPessoalDTO {
   data_nascimento: Date;
   foto: string;
   avaliacao_como_cliente: Number;
-  historico_de_viagens: string[];
+  historico_de_viagens: ListaHistoricoDTO | [];
   endereco: string[];
   tipo_conta: string;
   email: string;

@@ -1,19 +1,25 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { NotFoundException, InternalServerErrorException, Logger, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../entities/user.entity';
 import { Model } from 'mongoose';
 import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO } from '../dtos/ListaUsuario.dto';
 import { CriaUsuarioDTO } from '../dtos/CriaUsuario.dto';
-import { LoginUsuarioInternoDTO } from 'src/modules/user/submodules/auth-user/dtos/AuthUser.dto';
 import { DadosUsuarioAtualizarDTO } from '../dtos/DadosUsuarioAtualizar.dto';
-import { tokenSessaoDTO } from '../dtos/tokenSessao.dto';
-import {MensagemDTO } from 'src/utils/dtos/Mensagem.dto';
+import { MensagemRetornoDTO } from '../dtos/Mensagens.dto';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { LoginUsuarioInternoDTO } from '../dtos/AuthUser.dto';
+
 
 @Injectable()
 export class UserService {
   
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
-
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<User>,
+    private readonly jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
+  private readonly logger = new Logger(UserService.name);
 
   async findByField(campo: string, valor: string, limit?: number):Promise<ListaUsuarioPublicoDTO[]> {
     try{
@@ -64,7 +70,7 @@ export class UserService {
       // Verifica se nenhum usuário foi encontrado
       if (!pesquisa) {
         console.error('Usuário não encontrado para o email informado:', valor);
-        throw new Error('email incorreto!!!');
+        throw new Error('email incorreto');
       }
 
       const retorno:LoginUsuarioInternoDTO = {
@@ -74,7 +80,8 @@ export class UserService {
         email: pesquisa.email
       }
 
-      return retorno; // Retorna o usuário encontrado
+      return retorno; 
+      
     } catch (error) {
       console.error('Erro ao tentar encontrar usuário pelo email:', error);
       throw new Error('Erro ao tentar encontrar usuário pelo email');
@@ -88,6 +95,7 @@ export class UserService {
   try{
 
     const newUser:User = {
+      CPF: user.CPF,
       nome: user.nome,
       email: user.email,
       senha: user.senha,
@@ -97,13 +105,14 @@ export class UserService {
       endereco: user.endereco,
       usuario_ativo: true,
       tipo_conta: 'usuario',
-      usuario_confirmado: false,
       historico_de_viagens: [],
-      criado_em: new Date(),
       avaliacao_como_cliente: 0,
-      CPF: '',
+      criado_em: new Date(),      
       modificado_em: new Date(),
     };
+
+
+
 
     const data: User | null = await new this.userModel(newUser).save();
 
@@ -112,17 +121,52 @@ export class UserService {
       throw new Error('Erro ao cadastrar o usuário, por favor tente mais tarde');
     }
 
-    const retorno:ListaUsuarioRetornoDTO = {
-      nome: data.nome,
-      email: data.email,
+    return {
+        nome: data.nome,
+        email: data.email,
     };
 
-    return retorno;
     } catch (error) {
       console.error('erro cadastrar um novo usuário, erro:', error);
       throw new Error('erro cadastrar um novo usuário');
     }
   }
+
+
+  async verificaEmail(token: string): Promise<MensagemRetornoDTO> {
+    try {
+      
+      const decoded = this.jwtService.verify(token,{secret: this.configService.get<string>('SECRET_JWT_EMAIL')});
+  
+     
+      if (!decoded || !decoded.email) {
+        throw new Error('Token não contém um e-mail válido.');
+      }
+  
+      return {
+        mensagem:decoded.email,
+        statusCode: 200,
+      };
+  
+    } catch (error) {
+
+      this.logger.error(`Erro na verificação de email: ${error.message}`);
+
+      if (error.name === 'TokenExpiredError') {
+        return {
+          mensagem: 'Token expirado, solicite um novo',
+          statusCode: 401, // Unauthorized
+        };
+      } 
+      return {
+        mensagem: 'Token inválido ou expirado',
+        statusCode: 400, // Bad Request
+      };
+    }
+  }
+
+
+
 
 
 
@@ -175,7 +219,7 @@ export class UserService {
         data_nascimento: user.data_nascimento,
         endereco: user.endereco,
         avaliacao_como_cliente: user.avaliacao_como_cliente,
-        historico_de_viagens: user.historico_de_viagens,
+        historico_de_viagens: [],
         CPF: user.CPF,
         tipo_conta: user.tipo_conta,
       }
@@ -188,30 +232,6 @@ export class UserService {
       throw new Error('Failed to find user by ID');
     }
   }
-
-  async SolicitarCarona(token: tokenSessaoDTO):Promise <MensagemDTO | null >{
-
-    return
-  }
-
-
-
-  async ListaUmUsuarioPublico(nome: string):Promise <ListaUsuarioPublicoDTO | null >{
-
-    return
-  }
-
-
-  async ListaUsuarioPublico(nome: string):Promise <ListaUsuarioPublicoDTO[] | null >{
-
-    return
-  }
-
-  async ConfirmarContaUsuario(mensagem: string):Promise <MensagemDTO[] | null >{
-
-    return
-  }
-
 
   async AtualizarUsuario(user:DadosUsuarioAtualizarDTO, id: string): Promise<ListaUsuarioRetornoDTO> {
     try {
@@ -234,6 +254,36 @@ export class UserService {
       throw new InternalServerErrorException('Error na atualização do usuário');
     }
   }
+
+
+  // async ConfirmarContaUsuario(email: string): Promise<ListaUsuarioRetornoDTO> {
+  //     // Atualiza o campo 'usuario_confirmado' para true
+  //     const userUpdate: Partial<User> = {
+  //       usuario_confirmado: true,
+  //       usuario_ativo: true,
+  //     };
+
+  //     // Atualiza o usuário pelo email
+  //     const usuarioAtualizado = await this.userModel.findOneAndUpdate(
+  //       { email },
+  //       userUpdate,
+  //       { new: true }
+  //     ).exec();
+
+  //     // Verifica se o usuário foi encontrado
+  //     if (!usuarioAtualizado) {
+  //       this.logger.warn(`Usuário não encontrado para o email: ${email}`);
+  //       throw new NotFoundException('Usuário não encontrado para ativação da conta');
+  //     }
+
+
+  //     return {
+  //       nome: usuarioAtualizado.nome,
+  //       email: usuarioAtualizado.email,
+  //     };
+      
+  // }
+
 
 
   async DesativarUsuario( id: string): Promise<any> {

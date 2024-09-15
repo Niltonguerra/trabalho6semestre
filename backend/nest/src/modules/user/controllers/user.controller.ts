@@ -1,22 +1,28 @@
+import { HttpException, HttpStatus,ConflictException } from '@nestjs/common';
 import { Body, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, Post, Put, Query, Request, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { User } from '../entities/user.entity';
 import { CriaUsuarioDTO } from '../dtos/CriaUsuario.dto';
 import { HashPasswordPipe } from '../pipes/passwordEncryption.pipe';
 import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO} from '../dtos/ListaUsuario.dto';
-import { RolesGuardUser } from 'src/modules/user/submodules/auth-user/guards/roles-user.guard';
-import { JwtStrategyUser } from 'src/modules/user/submodules/auth-user/strategies/jwt-user.strategy';
-import { JwtAuthGuardUser } from 'src/modules/user/submodules/auth-user/guards/jwt-auth-user.guard';
 import { DadosUsuarioAtualizarDTO } from '../dtos/DadosUsuarioAtualizar.dto';
+import { MensagemRetornoDTO } from '../dtos/Mensagens.dto';
+import { EmailService } from 'src/modules/email/services/email.service';
+import { RedisHashService } from 'src/modules/redis/services/redisHash.service';
+import { JwtAuthGuardUser } from '../Guards/jwt-auth-user.guard';
+import { RolesGuardUser } from '../Guards/roles-user.guard';
 
 
 @Controller('user')
 export class UserController {
 
-  constructor(private readonly service: UserService) {}
+  constructor(
+    private readonly service: UserService,
+    private readonly emailService: EmailService,
+    private readonly redisHashService: RedisHashService,
+  ) {}
 
 
-// rotas do frontend e do usuário
+// serve como listaUmUsuario Publico
   @Get('search/:campo/:valor')
   async findByField( 
     @Param('campo') campo: string, @Param('valor') valor: string,
@@ -33,7 +39,7 @@ export class UserController {
 
 
   @Get('todos')
-  async findAll(): Promise<{ usuario: ListaUsuarioPublicoDTO[]; message: string }> {
+  async ListaUsuariosPublicos(): Promise<{ usuario: ListaUsuarioPublicoDTO[]; message: string }> {
     const usuario: ListaUsuarioPublicoDTO[] = await this.service.findAll();
     return {
       usuario,
@@ -42,24 +48,55 @@ export class UserController {
   }
 
 
-  @Post('create')
+  @Post('validaCadastro')
   @UsePipes(new ValidationPipe(), HashPasswordPipe)
-  async create(@Body() user: CriaUsuarioDTO): 
-  Promise<{ usuario: ListaUsuarioRetornoDTO; message: string }> {
+  async create(@Body() user: CriaUsuarioDTO): Promise<MensagemRetornoDTO> {
 
     const verificaEmail:ListaUsuarioPublicoDTO[] = await this.service.findByField('email', user.email);
-
     if (verificaEmail.length > 0) {
-      throw new Error('Email já cadastrado');
+      throw new ConflictException('Email já cadastrado');
     }
 
-    const retorno:ListaUsuarioRetornoDTO = await this.service.CriarUsuario(user);
+    await this.emailService.EnviaVerificacao(user.email,'user/CadastraUsuario');
 
-    return {
-      usuario: retorno,
-      message: 'Criado com sucesso!',
-    };
+    await this.redisHashService.setHash(user.email,user, 3600);
+
+     return {
+        mensagem: "Cadastro realizado com sucesso, verifique seu e-mail em até 1 hora para ativar sua conta",
+        statusCode: 200,
+        dadosUsuario: {
+          email: user.email,
+          nome: user.nome,
+        },
+      };
   }
+
+  @Get('CadastraUsuario')
+  async CadastraUsuario(@Query('token') token: string): Promise<MensagemRetornoDTO> {
+    try {
+
+      const email:MensagemRetornoDTO = await this.service.verificaEmail(token);
+
+      const redis:CriaUsuarioDTO = await this.redisHashService.getHash(email.mensagem);
+
+      const retorno:ListaUsuarioRetornoDTO = await this.service.CriarUsuario(redis);
+
+      await this.redisHashService.deleteValueHash(email.mensagem);
+      
+      return {
+        mensagem: 'Email verificado com sucesso',
+        statusCode: 200,
+        dadosUsuario: {
+          email: retorno.email,
+          nome: retorno.nome,
+        },
+      };
+
+    } catch (error) {
+      throw new HttpException('Token inválido ou expirado', HttpStatus.BAD_REQUEST);
+    }
+  }
+
 
 
 // rota do usuário
@@ -77,13 +114,19 @@ export class UserController {
     };
   }
 
+
+
+
+
+
+
+
+
+
   // rota do usuário
   @UseGuards(JwtAuthGuardUser, RolesGuardUser)
-  @Put('update')
-  async update( @Request() req, @Body() user: DadosUsuarioAtualizarDTO): 
-  Promise<{ 
-    usuario: ListaUsuarioRetornoDTO; 
-    message: string }> {
+  @Put('update') 
+  async update( @Request() req, @Body() user: DadosUsuarioAtualizarDTO): Promise<{ usuario: ListaUsuarioRetornoDTO; message: string }> {
 
     const userId = req.user.userId;
 

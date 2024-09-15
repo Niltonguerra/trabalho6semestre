@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AuthStoreDTO, LoginStoreInternoDTO } from '../dtos/AuthStore.dto';
 import { StoreService } from 'src/modules/store/services/store.service';
+import { ConfigService } from '@nestjs/config';
 
 
 
@@ -14,6 +15,7 @@ export class StoreAuthService {
   constructor(
     private readonly storeService: StoreService,
     private readonly jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
 
@@ -55,7 +57,7 @@ export class StoreAuthService {
   private async geraToken(user: LoginStoreInternoDTO ):Promise<string> {
     const payload = { email: user.email, id: user._id };
 
-    return this.jwtService.sign(payload)
+    return this.jwtService.sign(payload, {secret: this.configService.get<string>('SECRET_JWT_SESSION_USER'), expiresIn: '1h'});
 
   }
 

@@ -1,4 +1,4 @@
-export class ListaUsuarioRetorno {
+export class ListaVeiculoRetorno {
   placa:string;
   modelo:string;
   cor:string;

@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
@@ -13,9 +13,9 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
+
   app.useGlobalPipes(new ValidationPipe());
 
-    // Habilitar CORS globalmente
     app.use(cors());
   await app.listen(3100);
 }

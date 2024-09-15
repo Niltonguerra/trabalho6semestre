@@ -1,20 +1,23 @@
 import { Module, Global } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { RedisController } from './controllers/redis.controller';
-import { RedisService } from './services/redis.service';
+import { RedisHashController } from './controllers/redisHash.controller';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RedisHashService } from './services/redisHash.service';
+import { RedisSessionService } from './services/redisSession.service';
+import { RedisSessionController } from './controllers/RedisSession.controller';
 
 @Global()
 @Module({
-  imports: [],
-  controllers: [RedisController],
-
-
+  imports: [
+    ConfigModule,
+  ],
   providers: [
     {
       provide: 'REDIS_CLIENT',
-      useFactory: () => {
-        const redisHost = process.env.REDIS_HOST || 'localhost';
-        const redisPort = parseInt(process.env.REDIS_PORT, 10) || 6379;
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const redisHost = configService.get<string>('REDIS_HOST');
+        const redisPort =configService.get<number>('REDIS_PORT');
 
         const redisClient = new Redis({
           host: redisHost,
@@ -24,8 +27,16 @@ import { RedisService } from './services/redis.service';
         return redisClient;
       },
     },
-    RedisService,
+    RedisHashService,
+    RedisSessionService,
   ],
-  exports: ['REDIS_CLIENT'],
+  controllers: [
+    RedisHashController,
+    RedisSessionController,
+  ],
+  exports: ['REDIS_CLIENT',RedisSessionService, RedisHashService],
 })
 export class RedisModule {}
+
+
+

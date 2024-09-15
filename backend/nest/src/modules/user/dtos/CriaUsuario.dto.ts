@@ -1,6 +1,5 @@
 import { IsArray, IsDate, isDate, IsEmail, IsNotEmpty, IsNumber, IsString, IsUrl, MaxLength, MinLength } from 'class-validator';
 import { IsTelefone } from '../decorator/telefone-brasil.decorator';
-import { EmailEhUnico } from '../decorator/email-eh-unico.decorator';
 import { ContainsUppercase } from '../decorator/upper-case.decorator';
 import { ContainsLowercase } from '../decorator/lower-case.decorator';
 import { ContainsNumber } from '../decorator/number.decorator';
@@ -32,7 +31,6 @@ export class CriaUsuarioDTO {
   @IsNotEmpty({ message: 'O nome não pode ser vazio' })
   nome: string;
 
-  // @EmailEhUnico({ message: 'O e-mail informado já está em uso' })
   @IsEmail({}, { message: 'O email informado é inválido' })
   @IsNotEmpty({ message: 'O email não pode ser vazio' })
   email: string;

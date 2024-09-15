@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { Historico, HistoricoSchema } from '../../historico/entities/historico.entity';
 
 @Schema()
 export class User {
@@ -21,9 +22,6 @@ export class User {
 
   // @Prop({ type: [String] })
   // tags: string[];
-
-  @Prop({ type: [String] })
-  historico_de_viagens: string[];
 
   @Prop({ type: [String] })
   endereco: string[];
@@ -52,8 +50,8 @@ export class User {
   @Prop({ type: Boolean })
   usuario_ativo: boolean;
 
-  @Prop({ type: Boolean })
-  usuario_confirmado: boolean;
+  @Prop({ type: [HistoricoSchema], default: [],required: false })
+  historico_de_viagens?: Historico[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

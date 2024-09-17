@@ -1,5 +1,4 @@
 /backend/nest/node_modules/
-/backend/doc/
 /backend/nest/dist/
 /backend/nest/backup/
 /backend/nest/**/*.log

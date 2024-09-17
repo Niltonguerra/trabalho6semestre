@@ -1,5 +1,18 @@
 import { HttpException, HttpStatus,ConflictException } from '@nestjs/common';
-import { Body, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, Post, Put, Query, Request, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { 
+  Body, 
+  Controller, 
+  Delete,
+  Get, 
+  Param, 
+  Post, 
+  Put, 
+  Query, 
+  Request, 
+  UseGuards, 
+  UsePipes, 
+  ValidationPipe 
+} from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CriaUsuarioDTO } from '../dtos/CriaUsuario.dto';
 import { HashPasswordPipe } from '../pipes/passwordEncryption.pipe';

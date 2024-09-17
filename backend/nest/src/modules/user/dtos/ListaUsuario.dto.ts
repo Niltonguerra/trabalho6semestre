@@ -16,7 +16,7 @@ export class ListaUsuarioPessoalDTO {
   data_nascimento: Date;
   foto: string;
   avaliacao_como_cliente: Number;
-  historico_de_viagens: ListaHistoricoDTO | [];
+  historico_de_viagens: string[];
   endereco: string[];
   tipo_conta: string;
   email: string;

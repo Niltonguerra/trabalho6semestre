@@ -11,6 +11,7 @@ import { RedisModule } from './modules/redis/redis.module';
 import { EmailModule } from './modules/email/email.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
+import { HistoricoModule } from './modules/historico/historico.module';
 
 
 @Module({
@@ -38,6 +39,7 @@ import { UserModule } from './modules/user/user.module';
     AuthStoreModule,
     RedisModule,
     EmailModule,
+    HistoricoModule,
   ],
   controllers: [AppController],
   providers: [

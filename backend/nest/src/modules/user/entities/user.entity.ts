@@ -50,8 +50,8 @@ export class User {
   @Prop({ type: Boolean })
   usuario_ativo: boolean;
 
-  @Prop({ type: [HistoricoSchema], default: [],required: false })
-  historico_de_viagens?: Historico[];
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'historico', required: false})
+  historico_de_viagens?: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

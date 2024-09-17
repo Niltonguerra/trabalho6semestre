@@ -31,6 +31,11 @@ import { EmailService } from '../email/services/email.service';
     UserController,
     AuthController,
   ],
+  exports: [
+    UserService,
+    JwtAuthGuardUser,
+    RolesGuardUser,
+  ],
 
 })
 

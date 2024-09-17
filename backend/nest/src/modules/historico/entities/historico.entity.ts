@@ -54,6 +54,8 @@ export class Historico {
 
   @Prop({ type: [String] })
   id_consumidores: string[];
+
+  
 }
 
 export const HistoricoSchema = SchemaFactory.createForClass(Historico);

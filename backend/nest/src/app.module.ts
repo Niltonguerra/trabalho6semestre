@@ -2,17 +2,13 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProductModule } from './modules/product/product.module';
-import { StoreModule } from './modules/store/store.module';
 import { APP_PIPE } from '@nestjs/core';
 import { PaymentModule } from './modules/payment/payment.module';
-import { AuthStoreModule } from './modules/store/submodules/auth-store/auth-store.module';
 import { RedisModule } from './modules/redis/redis.module';
 import { EmailModule } from './modules/email/email.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { HistoricoModule } from './modules/historico/historico.module';
-
 
 @Module({
   imports: [
@@ -33,10 +29,7 @@ import { HistoricoModule } from './modules/historico/historico.module';
     }),
 
     UserModule,
-    ProductModule,
-    StoreModule,
     PaymentModule,
-    AuthStoreModule,
     RedisModule,
     EmailModule,
     HistoricoModule,

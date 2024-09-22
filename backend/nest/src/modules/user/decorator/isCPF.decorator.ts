@@ -1,5 +1,5 @@
 import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
-import { validateCPF } from './cpf-validator';
+import { validateCPF } from './cpfValidator';
 
 @ValidatorConstraint({ name: 'isCPF', async: false })
 export class IsCPFConstraint implements ValidatorConstraintInterface {

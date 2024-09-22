@@ -28,7 +28,7 @@ export class EmailService {
 
 
 
-  async EnviaVerificacao(email: string,url:string): Promise<number> {
+  async EnviaVerificacaoEmail(email: string,url:string): Promise<number> {
     try {
       const payload = { email: email };
       

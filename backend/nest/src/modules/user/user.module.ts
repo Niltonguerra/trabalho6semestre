@@ -4,13 +4,17 @@ import { UserSchema } from './entities/user.entity';
 import { UserService } from './services/user.service';
 import { UserController } from './controllers/user.controller';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { RolesGuardUser } from './Guards/roles-user.guard';
-import { JwtAuthGuardUser } from './Guards/jwt-auth-user.guard';
+import { RolesGuardUser } from './Guards/rolesUser.guard';
+import { JwtAuthGuardUser } from './Guards/jwtAuthUser.guard';
 import { AuthUserService } from './services/authUser.service';
 import { JwtStrategyUser } from './strategies/jwtUser.strategy';
-import { AuthController } from './controllers/auth.controller';
+import { AuthUserController } from './controllers/auth.controller';
 import { EmailModule } from '../email/email.module';
 import { EmailService } from '../email/services/email.service';
+import { PrestadorService } from './services/prestador.service';
+import { VeiculoService } from './services/veiculo.service';
+import { PrestadorController } from './controllers/prestador.controller';
+import { VeiculoController } from './controllers/veiculo.controller';
 
 
 @Module({
@@ -26,10 +30,15 @@ import { EmailService } from '../email/services/email.service';
     JwtStrategyUser,
     RolesGuardUser,
     EmailService,
+    PrestadorService,
+    JwtService,
+    VeiculoService,
   ],
   controllers: [
     UserController,
-    AuthController,
+    AuthUserController,
+    PrestadorController,
+    VeiculoController,
   ],
   exports: [
     UserService,

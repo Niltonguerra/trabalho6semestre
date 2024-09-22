@@ -2,13 +2,13 @@ import { NotFoundException, InternalServerErrorException, Logger, Injectable } f
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../entities/user.entity';
 import { Model } from 'mongoose';
-import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO } from '../dtos/ListaUsuario.dto';
-import { CriaUsuarioDTO } from '../dtos/CriaUsuario.dto';
-import { DadosUsuarioAtualizarDTO } from '../dtos/DadosUsuarioAtualizar.dto';
+import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO } from '../dtos/usuario/ListaUsuario.dto';
+import { CriaUsuarioDTO } from '../dtos/usuario/CriaUsuario.dto';
+import { DadosUsuarioAtualizarDTO } from '../dtos/usuario/DadosUsuarioAtualizar.dto'; 
 import { MensagemRetornoDTO } from '../dtos/Mensagens.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { LoginUsuarioInternoDTO } from '../dtos/AuthUser.dto';
+import { LoginUsuarioInternoDTO } from '../dtos/autenticacao/AuthUser.dto';
 
 
 @Injectable()
@@ -21,6 +21,7 @@ export class UserService {
   ) {}
   private readonly logger = new Logger(UserService.name);
 
+  
   async findByField(campo: string, valor: string, limit?: number):Promise<ListaUsuarioPublicoDTO[]> {
     try{
       let query = {};
@@ -57,11 +58,6 @@ export class UserService {
   }
 
 
-
-
-
-
-// rota para uso interno não espola a o usuário!!!
   async findByEmail(valor: string): Promise<LoginUsuarioInternoDTO | null> {
     try {
       // Pesquisa pelo email no modelo Mongoose
@@ -89,8 +85,6 @@ export class UserService {
   }
 
 
-
-
   async CriarUsuario(user: CriaUsuarioDTO):Promise<ListaUsuarioRetornoDTO> {
   try{
 
@@ -109,6 +103,13 @@ export class UserService {
       avaliacao_como_cliente: 0,
       criado_em: new Date(),      
       modificado_em: new Date(),
+      avaliacao_como_prestador: undefined,
+      carro: undefined,
+      CNH: undefined,
+      RG: undefined,
+      CRLV: undefined,
+      foto_CNH: undefined,
+      DPVAT: undefined,
     };
 
 
@@ -166,10 +167,6 @@ export class UserService {
   }
 
 
-
-
-
-
   async findAll(): Promise<ListaUsuarioPublicoDTO[]> {
     try {
       const data: User[] | null = await this.userModel.find().exec();
@@ -199,8 +196,6 @@ export class UserService {
     }
   }
   
-
-
 
 
   async ListaUmUsuarioDono(id: string):  Promise <ListaUsuarioPessoalDTO | null> {
@@ -256,36 +251,6 @@ export class UserService {
   }
 
 
-  // async ConfirmarContaUsuario(email: string): Promise<ListaUsuarioRetornoDTO> {
-  //     // Atualiza o campo 'usuario_confirmado' para true
-  //     const userUpdate: Partial<User> = {
-  //       usuario_confirmado: true,
-  //       usuario_ativo: true,
-  //     };
-
-  //     // Atualiza o usuário pelo email
-  //     const usuarioAtualizado = await this.userModel.findOneAndUpdate(
-  //       { email },
-  //       userUpdate,
-  //       { new: true }
-  //     ).exec();
-
-  //     // Verifica se o usuário foi encontrado
-  //     if (!usuarioAtualizado) {
-  //       this.logger.warn(`Usuário não encontrado para o email: ${email}`);
-  //       throw new NotFoundException('Usuário não encontrado para ativação da conta');
-  //     }
-
-
-  //     return {
-  //       nome: usuarioAtualizado.nome,
-  //       email: usuarioAtualizado.email,
-  //     };
-      
-  // }
-
-
-
   async DesativarUsuario( id: string): Promise<any> {
     try {
 
@@ -313,29 +278,6 @@ export class UserService {
       throw new InternalServerErrorException('Error na desativação do usuário');
     }
   }
-
-  // async remove(id: string){
-  //   try{
-  //     const deletedUser: User | null = await this.userModel.findByIdAndDelete(id).exec();
-
-  //     if (!deletedUser) {
-  //       throw new NotFoundException('Usuario não encontrado para realizar a exclução');
-  //     }
-
-
-  //     const retorno: ListaUsuarioRetorno = {
-  //       nome: deletedUser.nome,
-  //       email: deletedUser.email,
-  //     };
-
-  //     return retorno;
-  //     } catch (error) {
-  //       if (error instanceof NotFoundException) {
-  //         throw error;
-  //       }
-  //       throw new InternalServerErrorException('Error na exclução do usuário');
-  //   }
-  // }
 
 }
 

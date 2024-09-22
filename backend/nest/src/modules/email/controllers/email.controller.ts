@@ -14,7 +14,7 @@ export class EmailController {
   @Post('testeEnviarEmail')
   async EnviaVerificacao(@Body('email') email: string):Promise<MensagemRetornoDTO> {
 
-    const response = await this.emailService.EnviaVerificacao('niltondg.39@gmail.com','user/CadastraUsuario');
+    const response = await this.emailService.EnviaVerificacaoEmail('niltondg.39@gmail.com','user/CadastraUsuario');
 
       return {
         statusCode: response,

@@ -14,15 +14,15 @@ import {
   ValidationPipe 
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { CriaUsuarioDTO } from '../dtos/CriaUsuario.dto';
+import { CriaUsuarioDTO } from '../dtos/usuario/CriaUsuario.dto';
 import { HashPasswordPipe } from '../pipes/passwordEncryption.pipe';
-import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO} from '../dtos/ListaUsuario.dto';
-import { DadosUsuarioAtualizarDTO } from '../dtos/DadosUsuarioAtualizar.dto';
+import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO} from '../dtos/usuario/ListaUsuario.dto';
+import { DadosUsuarioAtualizarDTO } from '../dtos/usuario/DadosUsuarioAtualizar.dto'; 
 import { MensagemRetornoDTO } from '../dtos/Mensagens.dto';
 import { EmailService } from 'src/modules/email/services/email.service';
 import { RedisHashService } from 'src/modules/redis/services/redisHash.service';
-import { JwtAuthGuardUser } from '../Guards/jwt-auth-user.guard';
-import { RolesGuardUser } from '../Guards/roles-user.guard';
+import { JwtAuthGuardUser } from '../Guards/jwtAuthUser.guard';
+import { RolesGuardUser } from '../Guards/rolesUser.guard';
 
 
 @Controller('user')
@@ -70,7 +70,13 @@ export class UserController {
       throw new ConflictException('Email já cadastrado');
     }
 
-    await this.emailService.EnviaVerificacao(user.email,'user/CadastraUsuario');
+    const verificaCPF:ListaUsuarioPublicoDTO[] = await this.service.findByField('CPF', user.CPF);
+    if (verificaCPF.length > 0) {
+      throw new ConflictException('CPF já cadastrado');
+    }
+
+    await this.emailService.EnviaVerificacaoEmail(user.email,'user/CadastraUsuario');
+    
 
     await this.redisHashService.setHash(user.email,user, 3600);
 

@@ -1,4 +1,4 @@
-import { ListaUsuarioRetornoDTO } from "./ListaUsuario.dto";
+import { ListaUsuarioRetornoDTO } from "./usuario/ListaUsuario.dto";
 
 export class MensagemLoginDTO {
   statusCode: string;

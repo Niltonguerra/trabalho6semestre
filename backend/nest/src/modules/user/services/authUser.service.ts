@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from 'src/modules/user/services/user.service';
 import { ConfigService } from '@nestjs/config';
 import { RedisSessionService } from 'src/modules/redis/services/redisSession.service';
-import { AuthUserDTO, LoginUsuarioInternoDTO } from '../dtos/AuthUser.dto';
+import { AuthUserDTO, LoginUsuarioInternoDTO } from '../dtos/autenticacao/AuthUser.dto';
 
 
 

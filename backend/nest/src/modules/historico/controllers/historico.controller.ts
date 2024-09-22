@@ -1,7 +1,7 @@
 import { Controller, Get, Param, UseGuards,Request,Post, Body, Delete, Put } from '@nestjs/common';
-import { ListaUsuarioPessoalDTO } from 'src/modules/user/dtos/ListaUsuario.dto';
-import { JwtAuthGuardUser } from 'src/modules/user/Guards/jwt-auth-user.guard';
-import { RolesGuardUser } from 'src/modules/user/Guards/roles-user.guard';
+import { ListaUsuarioPessoalDTO } from 'src/modules/user/dtos/usuario/ListaUsuario.dto'; 
+import { JwtAuthGuardUser } from 'src/modules/user/Guards/jwtAuthUser.guard';
+import { RolesGuardUser } from 'src/modules/user/Guards/rolesUser.guard';
 import { UserService } from 'src/modules/user/services/user.service';
 import { HistoricoService } from '../services/historico.service';
 import { UpdateHistoricoDto } from '../dtos/AtualizarHistorico.dto';

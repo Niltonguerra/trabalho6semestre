@@ -10,6 +10,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { HistoricoModule } from './modules/historico/historico.module';
 import { ProductModule } from './modules/product/product.module';
+import { ViagemModule } from './modules/viagem/viagem.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { ProductModule } from './modules/product/product.module';
     RedisModule,
     EmailModule,
     HistoricoModule,
-    ProductModule
+    ProductModule,
+    ViagemModule,
   ],
   controllers: [AppController],
   providers: [

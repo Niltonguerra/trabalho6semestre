@@ -24,8 +24,7 @@ import { VeiculoController } from './controllers/veiculo.controller';
   ],
   providers: [
     UserService,
-    AuthUserService,
-    JwtService, 
+    AuthUserService, 
     JwtAuthGuardUser,
     JwtStrategyUser,
     RolesGuardUser,
@@ -44,6 +43,11 @@ import { VeiculoController } from './controllers/veiculo.controller';
     UserService,
     JwtAuthGuardUser,
     RolesGuardUser,
+    JwtStrategyUser,
+    JwtService,
+    UserService,
+    VeiculoService,
+    PrestadorService,
   ],
 
 })

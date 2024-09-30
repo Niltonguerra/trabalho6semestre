@@ -5,7 +5,7 @@ nome="nome do modulo" && nest generate module $nome && nest generate service $no
 
 
 
-nome="email" && nest generate module $nome && nest generate service $nome && nest generate controller $nome && nest generate pipe $nome && nest generate decorator $nome && nest generate guard $nome && nest generate middleware $nome && nest generate filter $nome 
+nome="viagem" && nest generate module $nome && nest generate service $nome && nest generate controller $nome && nest generate pipe $nome && nest generate decorator $nome && nest generate guard $nome && nest generate middleware $nome && nest generate filter $nome 
 
 
 

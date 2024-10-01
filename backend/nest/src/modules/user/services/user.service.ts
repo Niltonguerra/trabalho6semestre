@@ -1,25 +1,27 @@
 import { NotFoundException, InternalServerErrorException, Logger, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../entities/user.entity';
 import { Model } from 'mongoose';
-import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO } from '../dtos/usuario/ListaUsuario.dto';
+import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO } from '../dtos/usuario/ListaUsuario.dto';
 import { CriaUsuarioDTO } from '../dtos/usuario/CriaUsuario.dto';
 import { DadosUsuarioAtualizarDTO } from '../dtos/usuario/DadosUsuarioAtualizar.dto'; 
-import { MensagemRetornoDTO } from '../dtos/Mensagens.dto';
+import { ListaUsuarioRetornoDTO, MensagemRetornoDTO } from '../dtos/Mensagens.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Usuario } from '../entities/user.entity';
 import { LoginUsuarioInternoDTO } from '../dtos/autenticacao/AuthUser.dto';
 
 
+
 @Injectable()
-export class UserService {
+export class UsuarioService {
   
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
+    @InjectModel('usuario') private readonly usuarioModel: Model<Usuario>,
     private readonly jwtService: JwtService,
     private configService: ConfigService,
   ) {}
-  private readonly logger = new Logger(UserService.name);
+  private readonly logger = new Logger(UsuarioService.name);
+
 
   
   async findByField(campo: string, valor: string, limit?: number):Promise<ListaUsuarioPublicoDTO[]> {
@@ -28,25 +30,25 @@ export class UserService {
 
       query[campo] = valor;
 
-      let searchQuery = this.userModel.find(query);
+      let searchQuery = this.usuarioModel.find(query);
 
       if (limit) {
         searchQuery = searchQuery.limit(limit);
       }
 
-      const data: User[] | null = await searchQuery.exec();
+      const data: Usuario[] | null = await searchQuery.exec();
 
       if(!data) {
         throw new Error('Erro ao buscar o usuário pelo campo informado');
       }
 
-      const retorno: ListaUsuarioPublicoDTO[] = data.map((user: ListaUsuarioPublicoDTO) => {
+      const retorno: ListaUsuarioPublicoDTO[] = data.map((usuario: ListaUsuarioPublicoDTO) => {
         return {
-          nome: user.nome,
-          email: user.email,
-          telefone: user.telefone,
-          foto: user.foto,
-          avaliacao_como_cliente: user.avaliacao_como_cliente,
+          nome: usuario.nome,
+          email: usuario.email,
+          telefone: usuario.telefone,
+          foto: usuario.foto,
+          avaliacao_como_cliente: usuario.avaliacao_como_cliente,
         };
       });
 
@@ -61,7 +63,7 @@ export class UserService {
   async findByEmail(valor: string): Promise<LoginUsuarioInternoDTO | null> {
     try {
       // Pesquisa pelo email no modelo Mongoose
-      const pesquisa: User | null = await this.userModel.findOne({ email: valor }).exec();
+      const pesquisa: Usuario | null = await this.usuarioModel.findOne({ email: valor }).exec();
 
       // Verifica se nenhum usuário foi encontrado
       if (!pesquisa) {
@@ -85,18 +87,18 @@ export class UserService {
   }
 
 
-  async CriarUsuario(user: CriaUsuarioDTO):Promise<ListaUsuarioRetornoDTO> {
+  async CriarUsuario(usuario: CriaUsuarioDTO):Promise<ListaUsuarioRetornoDTO> {
   try{
 
-    const newUser:User = {
-      CPF: user.CPF,
-      nome: user.nome,
-      email: user.email,
-      senha: user.senha,
-      telefone: user.telefone,
-      foto: user.foto,
-      data_nascimento: user.data_nascimento,
-      endereco: user.endereco,
+    const newusuario:Usuario = {
+      CPF: usuario.CPF,
+      nome: usuario.nome,
+      email: usuario.email,
+      senha: usuario.senha,
+      telefone: usuario.telefone,
+      foto: usuario.foto,
+      data_nascimento: usuario.data_nascimento,
+      endereco: usuario.endereco,
       usuario_ativo: true,
       tipo_conta: 'usuario',
       historico_de_viagens: [],
@@ -115,7 +117,7 @@ export class UserService {
 
 
 
-    const data: User | null = await new this.userModel(newUser).save();
+    const data: Usuario | null = await new this.usuarioModel(newusuario).save();
 
     if (!data) {
       console.error('erro ao cadastrar o usuário no service');
@@ -169,20 +171,20 @@ export class UserService {
 
   async findAll(): Promise<ListaUsuarioPublicoDTO[]> {
     try {
-      const data: User[] | null = await this.userModel.find().exec();
+      const data: Usuario[] | null = await this.usuarioModel.find().exec();
   
       if(!data) {
         console.log('Erro ao buscar todos os usuários no banco de dados')
         throw new Error('Erro ao buscar todos os usuários');
       }
 
-      const retorno: ListaUsuarioPublicoDTO[] = data.map((user: ListaUsuarioPublicoDTO) => {
+      const retorno: ListaUsuarioPublicoDTO[] = data.map((usuario: ListaUsuarioPublicoDTO) => {
         return {
-          nome: user.nome,
-          email: user.email,
-          telefone: user.telefone,
-          foto: user.foto,
-          avaliacao_como_cliente: user.avaliacao_como_cliente,
+          nome: usuario.nome,
+          email: usuario.email,
+          telefone: usuario.telefone,
+          foto: usuario.foto,
+          avaliacao_como_cliente: usuario.avaliacao_como_cliente,
         };
       });
 
@@ -200,45 +202,46 @@ export class UserService {
 
   async ListaUmUsuarioDono(id: string):  Promise <ListaUsuarioPessoalDTO | null> {
     try {
-      const user: User | null = await this.userModel.findById(id).exec();
+      const usuario: Usuario | null = await this.usuarioModel.findById(id).exec();
       
-      if (!user) {
+      if (!usuario) {
         throw new Error('Erro, não foi possivel encontrar o usuário pelo id informado');
       }
 
       const retorno:ListaUsuarioPessoalDTO = {
-        nome: user.nome,
-        email: user.email,
-        telefone: user.telefone,
-        foto: user.foto,
-        data_nascimento: user.data_nascimento,
-        endereco: user.endereco,
-        avaliacao_como_cliente: user.avaliacao_como_cliente,
+        nome: usuario.nome,
+        email: usuario.email,
+        telefone: usuario.telefone,
+        foto: usuario.foto,
+        data_nascimento: usuario.data_nascimento,
+        endereco: usuario.endereco,
+        avaliacao_como_cliente: usuario.avaliacao_como_cliente,
         historico_de_viagens: [],
-        CPF: user.CPF,
-        tipo_conta: user.tipo_conta,
+        CPF: usuario.CPF,
+        tipo_conta: usuario.tipo_conta,
+        id_viagens: usuario.id_viagens,
       }
 
       return retorno;
 
     } catch (error) {
       // Log de erro opcional
-      console.error('Error finding user by ID:', error);
-      throw new Error('Failed to find user by ID');
+      console.error('Error finding usuario by ID:', error);
+      throw new Error('Failed to find usuario by ID');
     }
   }
 
-  async AtualizarUsuario(user:DadosUsuarioAtualizarDTO, id: string): Promise<ListaUsuarioRetornoDTO> {
+  async AtualizarUsuario(usuario:DadosUsuarioAtualizarDTO, id: string): Promise<ListaUsuarioRetornoDTO> {
     try {
-      const updatedUser: User | null = await this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
+      const updatedusuario: Usuario | null = await this.usuarioModel.findByIdAndUpdate(id, usuario, { new: true }).exec();
       
-      if (!updatedUser) {
+      if (!updatedusuario) {
         throw new NotFoundException('Usuario não encontrado para realizar a atualização');
       }
 
       const retorno: ListaUsuarioRetornoDTO = {
-        nome: updatedUser.nome,
-        email: updatedUser.email,
+        nome: updatedusuario.nome,
+        email: updatedusuario.email,
       };
 
       return retorno;
@@ -254,19 +257,19 @@ export class UserService {
   async DesativarUsuario( id: string): Promise<any> {
     try {
 
-      const user: Partial<User> = {
+      const usuario: Partial<Usuario> = {
         usuario_ativo: false,
       };
 
-      const disableUser: User | null = await this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
+      const disableusuario: Usuario | null = await this.usuarioModel.findByIdAndUpdate(id, usuario, { new: true }).exec();
 
-      if (!disableUser) {
+      if (!disableusuario) {
         throw new NotFoundException('Usuario não encontrado para realizar a desativação');
       }
 
       const retorno: ListaUsuarioRetornoDTO = {
-        nome: disableUser.nome,
-        email: disableUser.email,
+        nome: disableusuario.nome,
+        email: disableusuario.email,
       };
       
       return retorno;

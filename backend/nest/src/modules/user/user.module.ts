@@ -1,7 +1,7 @@
 import {  Module} from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './entities/user.entity';
-import { UserService } from './services/user.service';
+import { UsuarioService } from './services/user.service';
 import { UserController } from './controllers/user.controller';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { RolesGuardUser } from './Guards/rolesUser.guard';
@@ -19,11 +19,11 @@ import { VeiculoController } from './controllers/veiculo.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: 'usuario', schema: UserSchema }]),
     JwtModule,
   ],
   providers: [
-    UserService,
+    UsuarioService,
     AuthUserService, 
     JwtAuthGuardUser,
     JwtStrategyUser,
@@ -40,12 +40,12 @@ import { VeiculoController } from './controllers/veiculo.controller';
     VeiculoController,
   ],
   exports: [
-    UserService,
+    UsuarioService,
     JwtAuthGuardUser,
     RolesGuardUser,
     JwtStrategyUser,
     JwtService,
-    UserService,
+    UsuarioService,
     VeiculoService,
     PrestadorService,
   ],

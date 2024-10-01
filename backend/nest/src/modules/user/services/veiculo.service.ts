@@ -3,14 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CriarVeiculoDto } from '../dtos/veiculo/criaVeiculo.dto';
 import { UpdateVeiculoDto } from '../dtos/veiculo/AtualizaVeiculo.dto';
-import { User } from '../entities/user.entity'; 
+import {  Usuario } from '../entities/user.entity'; 
 import { ListaVeiculoRetorno } from '../dtos/veiculo/ListaVeiculoPublico.dto';
 import { MensagemRetornoDTO } from '../dtos/Mensagens.dto';
 
 @Injectable()
 export class VeiculoService {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
+    @InjectModel('usuario') private readonly userModel: Model<Usuario>,
   ) {}
 
   async updateCarro(prestadorId: string, carroData: CriarVeiculoDto): Promise<MensagemRetornoDTO> {

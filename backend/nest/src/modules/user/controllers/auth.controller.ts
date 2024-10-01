@@ -3,7 +3,7 @@ import { AuthUserDTO } from '../dtos/autenticacao/AuthUser.dto';
 import { AuthUserService } from '../services/authUser.service';
 
 
-@Controller('auth-user')
+@Controller('auth-usuario')
 export class AuthUserController {
 
   constructor(

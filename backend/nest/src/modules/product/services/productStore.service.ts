@@ -3,14 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Product } from '../entities/product.entity';
 import { Model } from 'mongoose';
 import { ListaProductForStoreDTO } from '../dtos/listaProduct.dto';
-import { User } from 'src/modules/user/entities/user.entity';
+import { Usuario } from 'src/modules/user/entities/user.entity';
 
 
 @Injectable()
 export class ServiceProductForStore {
   constructor(
     @InjectModel('Product') private readonly productModel: Model<Product>,
-    @InjectModel('User') private readonly USerModel: Model<User>,
+    @InjectModel('usuario') private readonly USerModel: Model<Usuario>,
   ) {}
 
 

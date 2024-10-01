@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { MensagemRetornoDTO } from '../dtos/Mensagens.dto'; 
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../entities/user.entity'; 
+import { Usuario } from '../entities/user.entity'; 
 import { ListaPrestadorPessoalDTO, ListaPrestadorPublicoDTO } from '../dtos/prestador/ListaPrestador.dto';
 import { AtualizaPrestadorDTO } from '../dtos/prestador/AtualizarPrestador.dto';
 
@@ -12,7 +12,7 @@ import { AtualizaPrestadorDTO } from '../dtos/prestador/AtualizarPrestador.dto';
 export class PrestadorService {
   
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
+    @InjectModel('usuario') private readonly userModel: Model<Usuario>,
   ) {}
 
 
@@ -21,7 +21,7 @@ export class PrestadorService {
 
   async ListaUmPrestadorDono(id: string):  Promise <ListaPrestadorPessoalDTO | null> {
     try {
-      const Prestador: User | null = await this.userModel.findById(id).exec();
+      const Prestador: Usuario | null = await this.userModel.findById(id).exec();
       
       if (!Prestador) {
         throw new Error('Erro, não foi possivel encontrar o usuário pelo id informado');
@@ -51,6 +51,7 @@ export class PrestadorService {
           modelo: Prestador.carro.modelo,
           placa: Prestador.carro.placa,
         },
+        id_viagens: Prestador.id_viagens,
       }
 
       return retorno;
@@ -67,7 +68,7 @@ export class PrestadorService {
     try {
 
       this.logger.log(`Atualizando o prestador com id: ${id}`);
-      const tornaPrestador:Partial<User> = {
+      const tornaPrestador:Partial<Usuario> = {
         CNH: Prestador.CNH,
         RG: Prestador.RG,
         CRLV: Prestador.CRLV,
@@ -75,7 +76,7 @@ export class PrestadorService {
         foto_CNH: Prestador.foto_CNH,
         tipo_conta: "prestador",
       }
-      const updatedPrestador: User | null = await this.userModel.findByIdAndUpdate(id, tornaPrestador, { new: true }).exec();
+      const updatedPrestador: Usuario | null = await this.userModel.findByIdAndUpdate(id, tornaPrestador, { new: true }).exec();
       
       if (!updatedPrestador) {
         throw new NotFoundException('Prestador não encontrado para realizar a atualização');
@@ -110,13 +111,13 @@ export class PrestadorService {
         searchQuery = searchQuery.limit(limit);
       }
 
-      const data: User[] | null = await searchQuery.exec();
+      const data: Usuario[] | null = await searchQuery.exec();
 
       if(!data) {
         throw new Error('Erro ao buscar o usuário pelo campo informado');
       }
 
-      const retorno: ListaPrestadorPublicoDTO[] = data.map((user: User) => {
+      const retorno: ListaPrestadorPublicoDTO[] = data.map((user: Usuario) => {
         return {
           nome: user.nome,
           email: user.email,
@@ -131,6 +132,7 @@ export class PrestadorService {
             modelo: user.carro.modelo,
             placa: user.carro.placa,
           },
+          id_viagens: user.id_viagens,
         };
       });
 
@@ -144,7 +146,7 @@ export class PrestadorService {
 
   async findAll(): Promise<ListaPrestadorPublicoDTO[]> {
     try {
-      const data: User[] | null = await this.userModel.find().exec();
+      const data: Usuario[] | null = await this.userModel.find().exec();
   
       if(!data) {
         console.log('Erro ao buscar todos os usuários no banco de dados')
@@ -166,6 +168,7 @@ export class PrestadorService {
             modelo: user.carro.modelo,
             placa: user.carro.placa,
           },
+          id_viagens: user.id_viagens,
         };
       });
 

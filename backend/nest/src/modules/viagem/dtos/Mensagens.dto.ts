@@ -1,6 +1,8 @@
-export class ListaUsuarioRetornoDTO {
-  nome: string;
-  email: string;
+import mongoose from "mongoose";
+
+export class ListaDadosRetornoDTO {
+  nomePrestador?: string;
+  idViagem?: mongoose.Types.ObjectId;
 }
 
 export class MensagemLoginDTO {
@@ -12,5 +14,5 @@ export class MensagemLoginDTO {
 export class MensagemRetornoDTO {
   statusCode: number;
   mensagem: string;
-  dadosUsuario?: ListaUsuarioRetornoDTO;
+  dadosViagem?: ListaDadosRetornoDTO;
 }

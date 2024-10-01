@@ -7,79 +7,32 @@ export class Viagem {
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: false, auto: true })
   _id?: mongoose.Types.ObjectId;
 
-  @Prop({ type: String })
-  CPF: string;
+  @Prop({ type: String, required: false })
+  custo: string;
 
-  @Prop({ type: Date })
-  data_nascimento: Date;
-
-  @Prop({ type: String })
-  foto: string;
-
-  @Prop({ type: Number })
-  avaliacao_como_cliente: number;
-
-  @Prop({ type: [String] })
-  endereco: string[];
-
-  @Prop({ type: String, required: true })
-  tipo_conta: string;
-
-  @Prop({ type: String })
-  nome: string;
-
-  @Prop({ type: String })
-  email: string;
-
-  @Prop({ type: String })
-  senha: string;
-
-  @Prop({ type: String })
-  telefone: string;
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'usuario', required: false})
+  id_usuarios?: string[];
 
   @Prop({ type: String, required: false })
-  CNH: string;
+  origem: string;
 
   @Prop({ type: String, required: false })
-  foto_CNH: string;
+  destino: string;
 
   @Prop({ type: String, required: false })
-  RG: string;
+  data_hora_partida: Date;
 
   @Prop({ type: String, required: false })
-  DPVAT: string;
-
-  @Prop({ type: String, required: false })
-  CRLV: string;
+  data_hora_chegada: Date;
 
   @Prop({ type: Number, required: false })
-  avaliacao_como_prestador: number;
+  quantidade_de_vagas: number;
 
-  @Prop({ type: Date, required: false })
-  criado_em: Date;
+  @Prop({ type: String, required: false })
+  nome_prestador: string;
 
-  @Prop({ type: Date, required: false })
-  modificado_em: Date;
-
-  @Prop({ type: Boolean })
-  usuario_ativo: boolean;
-
-  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'historico', required: false })
-  historico_de_viagens?: string[];
-
-  @Prop(
-    raw({
-      placa: { type: String, required: false },
-      modelo: { type: String, required: false },
-      cor: { type: String, required: false },
-      ano: { type: Number, required: false },
-      foto: { type: String, required: false },
-      criado_em: { type: Date, required: false },
-      atualizado_em: { type: Date, required: false },
-    })
-  )
-  carro: Record<string, any>;
-
+  @Prop({ type: Boolean, required: false })
+  finalizada?: boolean;
 }
 
 export const ViagemSchema = SchemaFactory.createForClass(Viagem);

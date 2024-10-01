@@ -13,23 +13,23 @@ import {
   UsePipes, 
   ValidationPipe 
 } from '@nestjs/common';
-import { UserService } from '../services/user.service';
+import { UsuarioService } from '../services/user.service';
 import { CriaUsuarioDTO } from '../dtos/usuario/CriaUsuario.dto';
 import { HashPasswordPipe } from '../pipes/passwordEncryption.pipe';
-import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO, ListaUsuarioRetornoDTO} from '../dtos/usuario/ListaUsuario.dto';
+import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO} from '../dtos/usuario/ListaUsuario.dto';
 import { DadosUsuarioAtualizarDTO } from '../dtos/usuario/DadosUsuarioAtualizar.dto'; 
-import { MensagemRetornoDTO } from '../dtos/Mensagens.dto';
+import { ListaUsuarioRetornoDTO, MensagemRetornoDTO } from '../dtos/Mensagens.dto';
 import { EmailService } from 'src/modules/email/services/email.service';
 import { RedisHashService } from 'src/modules/redis/services/redisHash.service';
 import { JwtAuthGuardUser } from '../Guards/jwtAuthUser.guard';
 import { RolesGuardUser } from '../Guards/rolesUser.guard';
 
 
-@Controller('user')
+@Controller('usuario')
 export class UserController {
 
   constructor(
-    private readonly service: UserService,
+    private readonly service: UsuarioService,
     private readonly emailService: EmailService,
     private readonly redisHashService: RedisHashService,
   ) {}
@@ -75,7 +75,7 @@ export class UserController {
       throw new ConflictException('CPF já cadastrado');
     }
 
-    await this.emailService.EnviaVerificacaoEmail(user.email,'user/CadastraUsuario');
+    await this.emailService.EnviaVerificacaoEmail(user.email,'usuario/CadastraUsuario');
     
 
     await this.redisHashService.setHash(user.email,user, 3600);

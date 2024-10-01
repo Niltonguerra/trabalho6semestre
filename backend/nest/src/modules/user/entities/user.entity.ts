@@ -2,7 +2,7 @@ import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
 @Schema()
-export class User {
+export class Usuario {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: false, auto: true })
   _id?: mongoose.Types.ObjectId;
@@ -64,6 +64,9 @@ export class User {
   @Prop({ type: Boolean })
   usuario_ativo: boolean;
 
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'viagens', required: false})
+  id_viagens?: string[];
+
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'historico', required: false })
   historico_de_viagens?: string[];
 
@@ -82,4 +85,4 @@ export class User {
 
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(Usuario);

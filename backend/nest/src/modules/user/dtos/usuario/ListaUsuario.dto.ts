@@ -7,6 +7,7 @@ export class ListaUsuarioPublicoDTO {
   avaliacao_como_cliente: Number;
   email:string;
   telefone: string;
+  
 }
 
 
@@ -21,6 +22,8 @@ export class ListaUsuarioPessoalDTO {
   tipo_conta: string;
   email: string;
   telefone: string;
+  id_viagens: string[];
+
 }
 
 export class ListaUsuarioCompletoDTO {
@@ -40,10 +43,6 @@ export class ListaUsuarioCompletoDTO {
   modificado_em: Date;
   usuario_ativo: boolean;
   usuario_confirmado: boolean;
+  id_viagens: string[];
 }
 
-
-export class ListaUsuarioRetornoDTO {
-  nome: string;
-  email: string;
-}

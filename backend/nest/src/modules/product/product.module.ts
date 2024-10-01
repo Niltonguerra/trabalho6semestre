@@ -15,7 +15,7 @@ import { JwtAuthGuardUser } from '../user/Guards/jwtAuthUser.guard';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: 'usuario', schema: UserSchema }]),
   ],
   controllers: [ProductController],
   providers: [

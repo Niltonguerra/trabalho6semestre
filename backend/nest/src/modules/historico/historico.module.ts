@@ -5,7 +5,7 @@ import { HistoricoService } from './services/historico.service';
 import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserService } from '../user/services/user.service';
+import { UsuarioService } from '../user/services/user.service';
 
 
 @Module({

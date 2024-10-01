@@ -2,7 +2,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserService } from 'src/modules/user/services/user.service';
+import { UsuarioService } from 'src/modules/user/services/user.service';
 import { ConfigService } from '@nestjs/config';
 import { RedisSessionService } from 'src/modules/redis/services/redisSession.service';
 import { AuthUserDTO, LoginUsuarioInternoDTO } from '../dtos/autenticacao/AuthUser.dto';
@@ -14,7 +14,7 @@ import { AuthUserDTO, LoginUsuarioInternoDTO } from '../dtos/autenticacao/AuthUs
 @Injectable()
 export class AuthUserService {
   constructor(
-    private readonly userService: UserService,
+    private readonly UsuarioService: UsuarioService,
     private readonly jwtService: JwtService,
     private configService: ConfigService,
     private readonly redisSessionService: RedisSessionService,
@@ -52,7 +52,7 @@ export class AuthUserService {
 
   private async validateUser(email: string, senha: string): Promise<LoginUsuarioInternoDTO> {
  
-    const user:LoginUsuarioInternoDTO = await this.userService.findByEmail(email);
+    const user:LoginUsuarioInternoDTO = await this.UsuarioService.findByEmail(email);
     const isMatch = bcrypt.compare(senha, user.senha);
 
     if (user === null || !isMatch) {

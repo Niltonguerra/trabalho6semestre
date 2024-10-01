@@ -2,7 +2,7 @@ import { Controller, Get, Param, UseGuards,Request,Post, Body, Delete, Put } fro
 import { ListaUsuarioPessoalDTO } from 'src/modules/user/dtos/usuario/ListaUsuario.dto'; 
 import { JwtAuthGuardUser } from 'src/modules/user/Guards/jwtAuthUser.guard';
 import { RolesGuardUser } from 'src/modules/user/Guards/rolesUser.guard';
-import { UserService } from 'src/modules/user/services/user.service';
+import { UsuarioService } from 'src/modules/user/services/user.service';
 import { HistoricoService } from '../services/historico.service';
 import { UpdateHistoricoDto } from '../dtos/AtualizarHistorico.dto';
 import { CreateHistoricoDto } from '../dtos/CriarHistorico.dto';
@@ -12,7 +12,7 @@ import { CreateHistoricoDto } from '../dtos/CriarHistorico.dto';
 export class HistoricoController {
 
   constructor(
-    private readonly userService: UserService,
+    private readonly UsuarioService: UsuarioService,
     private readonly historicoService: HistoricoService
   ) {
   
@@ -24,7 +24,7 @@ export class HistoricoController {
 
     const id = req.user.userId;
 
-    const user:ListaUsuarioPessoalDTO = await this.userService.ListaUmUsuarioDono(id);
+    const user:ListaUsuarioPessoalDTO = await this.UsuarioService.ListaUmUsuarioDono(id);
 
     const idsHistorico:string[] = user.historico_de_viagens;
 

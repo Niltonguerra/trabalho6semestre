@@ -1,6 +1,7 @@
 /backend/nest/node_modules/
+/backend/nest/.env
 /backend/docs/backup
 /backend/nest/dist/
 /backend/backup/
 /backend/nest/**/*.log
-/backend/nest/.env
+

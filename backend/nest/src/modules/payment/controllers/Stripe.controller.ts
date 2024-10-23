@@ -7,7 +7,7 @@ export class PaymentController {
   private stripe: Stripe;
 
   constructor() {
-    this.stripe = new Stripe('sk_test_51QD6yqCrlTCpKLoSUK5LEN1c4QZMBUz2REAi7cA4hFXZPzLaiGZ10sLzOG2CdSPW1UuJs0R4VVVYFgz56yD1kJuL00PAWQhmAR', { apiVersion: '2024-09-30.acacia' }); // sua chave secreta
+    this.stripe = new Stripe('', { apiVersion: '2024-09-30.acacia' }); // sua chave secreta
   }
 
   @Post('create-payment-intent')

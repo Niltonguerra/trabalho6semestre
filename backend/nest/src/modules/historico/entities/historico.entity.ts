@@ -49,11 +49,8 @@ export class Historico {
   @Prop({ type: String })
   foto_prestador: string;
 
-  @Prop({ type: String })
-  id_prestador: string;
-
   @Prop({ type: [String] })
-  id_consumidores: string[];
+  id_usuarios: string[];
 
   
 }

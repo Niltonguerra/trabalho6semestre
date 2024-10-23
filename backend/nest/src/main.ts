@@ -15,8 +15,8 @@ async function bootstrap() {
   );
 
   app.useGlobalPipes(new ValidationPipe());
-
-    app.use(cors());
+  app.use(cors());
+  
   await app.listen(3100);
 }
 bootstrap();

@@ -1,6 +1,4 @@
-import { ListaHistoricoDTO } from '../../../historico/dtos/ListaHistorico.dto';
-import { HistoricoSchema } from '../../../historico/entities/historico.entity';
-import { Historico } from '../../../historico/decorator/historico.decorator';
+
 export class ListaUsuarioPublicoDTO {
   nome: string;
   foto: string;

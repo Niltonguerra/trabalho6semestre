@@ -3,3 +3,4 @@
 /backend/nest/dist/
 /backend/backup/
 /backend/nest/**/*.log
+/backend/nest/.env

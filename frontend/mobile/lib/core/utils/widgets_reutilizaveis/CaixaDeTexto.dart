@@ -26,13 +26,27 @@ class CaixaDeTexto extends StatelessWidget {
         TextField(
           controller: controller,
           decoration: InputDecoration(
-            border: OutlineInputBorder(),
             filled: true, // Habilita a cor de fundo
             fillColor: secondaryColor,
             contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0), // Ajusta o padding interno
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0), // Define o raio de arredondamento
+              borderSide: BorderSide.none, // Remove a borda padrão
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0), // Define o raio de arredondamento
+              borderSide: BorderSide.none, // Remove a borda padrão quando o campo está habilitado
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0), // Define o raio de arredondamento
+              borderSide: BorderSide.none, // Remove a borda padrão quando o campo está focado
+            ),
+          ),
+          style: TextStyle(
+            color: fivethColor, // Define a cor do texto digitado
           ),
           keyboardType: TextInputType.text,
-        ),
+        )
       ],
     );
   }

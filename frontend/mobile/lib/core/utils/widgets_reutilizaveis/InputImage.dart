@@ -6,8 +6,16 @@ import 'package:mobile/res/font_res.dart';
 
 class ImagePickerWidget extends StatefulWidget {
   final void Function(File?) onImagePicked;
+  final String txt_botao;
+  final Color txt_cor_fundo;
+  final Color txt_cor_texto;
 
-  ImagePickerWidget({required this.onImagePicked});
+  ImagePickerWidget({
+    required this.onImagePicked,
+    required this.txt_botao,
+    required this.txt_cor_fundo,
+    required this.txt_cor_texto,
+  });
 
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
@@ -34,35 +42,41 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _image != null
-            ? ClipRRect(
-          borderRadius: BorderRadius.circular(500.0), // Ajuste o raio aqui
-          child: Image.file(
-            _image!,
-            width: 200,
-            height: 200,
-            fit: BoxFit.cover,
+            ? Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(500.0), // Ajuste o raio aqui
+            child: Image.file(
+              _image!,
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
           ),
         )
-            : Text('Nenhuma imagem selecionada.'),
+            :  SizedBox(height: 30),
         SizedBox(height: 20),
-
-        ElevatedButton(
-          onPressed: _pickImage,
-          child: Text(
-            'Selecionar Imagem',
-            style: TextStyle(
-              fontFamily: FontRes.INTER_REGULAR,
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _pickImage,
+            child: Text(
+              widget.txt_botao,
+              style: TextStyle(
+                fontFamily: FontRes.INTER_REGULAR,
+                fontSize: 20,
+              ),
             ),
-          ),
-          style: ElevatedButton.styleFrom(
-            foregroundColor: fivethColor,
-            backgroundColor: fourthColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: widget.txt_cor_texto,
+              backgroundColor: widget.txt_cor_fundo,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              minimumSize: Size(50, 60),
             ),
-            minimumSize: Size(168, 36),
           ),
         ),
+
 
       ],
     );

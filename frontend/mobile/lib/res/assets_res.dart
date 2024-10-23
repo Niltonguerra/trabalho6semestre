@@ -11,8 +11,11 @@ class AssetsRes {
   static const String ALARM_OUTLINE = 'assets/images/alarm-outline.svg';
   static const String ARROW_BACK_OUTLINE = 'assets/images/arrow-back-outline.svg';
   static const String CAR = 'assets/images/car.png';
+  static const String CREDIT_CARD = 'assets/images/credit_card.png';
   static const String ICONE_CARRO_MENSAGEM = 'assets/images/icone-carro-mensagem.png';
   static const String LOGO = 'assets/images/logo.png';
+  static const String MONEY = 'assets/images/money.png';
+  static const String PIX_LOGO = 'assets/images/pix_logo.png';
   static const String SEARCH_OUTLINE = 'assets/images/search-outline.svg';
   static const String STAR = 'assets/images/star.svg';
   static const String USER = 'assets/images/user.png';

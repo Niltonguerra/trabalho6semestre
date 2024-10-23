@@ -6,6 +6,8 @@
 class FontRes {
   FontRes._();
 
+  static const String PLUGIN_NAME = 'mobile';
+  static const String PLUGIN_VERSION = '1.0.0+1';
   static const String INTER_BLACK = 'Inter-Black';
   static const String INTER_BOLD = 'Inter-Bold';
   static const String INTER_EXTRABOLD = 'Inter-ExtraBold';

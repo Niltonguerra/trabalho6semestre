@@ -1,82 +1,75 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class TestePage extends StatefulWidget {
+class PaymentPage extends StatefulWidget {
   @override
-  _TestePageState createState() => _TestePageState();
+  _PaymentPageState createState() => _PaymentPageState();
 }
 
-class _TestePageState extends State<TestePage> {
+class _PaymentPageState extends State<PaymentPage> {
+  Map<String, dynamic>? paymentIntentData;
 
-  final List<String> items = List.generate(7, (index) => 'Item $index');
+  Future<void> makePayment() async {
+    try {
+      // Cria um Payment Intent no backend
+      paymentIntentData = await createPaymentIntent('1000', 'usd'); // montante e moeda
+      
+      // Inicializa a folha de pagamento do Stripe
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntentData!['clientSecret'],
+          applePay: true,
+          googlePay: true,
+          style: ThemeMode.light,
+          merchantDisplayName: 'Your App Name',
+        ),
+      );
+
+      // Exibe a folha de pagamento
+      displayPaymentSheet();
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment successful")));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment failed")));
+    }
+  }
+
+  // Função para criar um Payment Intent chamando seu backend
+  Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency) async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://your-backend-url.com/create-payment-intent'),
+        body: {'amount': amount, 'currency': currency},
+        headers: {'Content-Type': 'application/json'},
+      );
+      return jsonDecode(response.body);
+    } catch (err) {
+      throw Exception('Error creating payment intent: $err');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: primaryColor, // Defina a cor que você deseja para a seta de voltar
-        ),
-        title: Text('tela de teste', style: TextStyle(color: fourthColor)),
-        backgroundColor: fivethColor,
+        title: Text('Stripe Payment'),
       ),
-
-
-
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.star, color: primaryColor),
-                      SizedBox(width: 10),
-                      Text(
-                        items[index],
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Subtítulo: Página inicial',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    'Descrição: Esta é uma descrição adicional para o ${items[index]}.',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          print('Ação 1 para ${items[index]}');
-                        },
-                        child: Text('Ação 1', style: TextStyle(color: primaryColor)),
-                      ),
-                      SizedBox(width: 10),
-                      TextButton(
-                        onPressed: () {
-                          print('Ação 2 para ${items[index]}');
-                        },
-                        child: Text('Ação 2', style: TextStyle(color: primaryColor)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            await makePayment();
+          },
+          child: Text('Pay'),
+        ),
       ),
     );
   }

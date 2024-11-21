@@ -1,72 +1,69 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
 
-class PaymentPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
+// class PaymentPage extends StatefulWidget {
+//   @override
+//   _PaymentPageState createState() => _PaymentPageState();
+// }
 
-      appBar: AppBar(
-        title: Text('Nova Página'),
-      ),
+// class _PaymentPageState extends State<PaymentPage> {
+//  Future<void> makePayment() async {
+//     print('Botão pressionado!');
 
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'teste1',
-              style: TextStyle(fontSize: 24),
-            ),
+//     // 1. Faça a requisição para criar a intenção de pagamento
+//     final response = await http.post(
+//       Uri.parse('http://192.168.18.64:3100/payment/create-payment-intent'),
+//       headers: {'Content-Type': 'application/json'},
+//       body: json.encode({'amount': 50, 'currency': 'brl','idempotencyKey': 'nasodnafrkle203j308u49'}),
+//     );
 
-            SizedBox(height: 20),
+//     // Verifique se a resposta foi bem-sucedida
+//     if (response.statusCode == 201) {
+//       final jsonResponse = json.decode(response.body);
+//       final clientSecret = jsonResponse['clientSecret'];
 
-            ElevatedButton(
-              onPressed: () {
-                _launchURL(context); // Chama a função para abrir a URL
-              },
-              child: Text('Abrir Flutter Homepage'),
-            ),
+//       print('enviou a requisição!');
 
-          ],
-        ),
-      ),
-    ),
-    );
-  }
+//       // 2. Inicialize a folha de pagamento com o clientSecret
+//       await Stripe.instance.initPaymentSheet(
+//         paymentSheetParameters: SetupPaymentSheetParameters(
+//           paymentIntentClientSecret: clientSecret,
+//           merchantDisplayName: 'Move Smart',
+//         ),
+//       );
 
-  // Função para abrir a URL usando Custom Tabs
-  void _launchURL(BuildContext context) async {
-    final theme = Theme.of(context);
+//       // 3. Exiba a folha de pagamento
+//       try {
+//         await Stripe.instance.presentPaymentSheet();
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           SnackBar(content: Text("Pagamento bem-sucedido!")),
+//         );
+//       } catch (e) {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           SnackBar(content: Text("Erro ao processar pagamento: $e")),
+//         );
+//       }
+//     } else {
+//       // Tratamento de erro caso a requisição falhe
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(content: Text("Erro ao criar intenção de pagamento")),
+//       );
+//     }
+//   }
 
-    try {
-      await launchUrl(
-        Uri.parse('https://flutter.dev'),
-        customTabsOptions: CustomTabsOptions(
-          colorSchemes: CustomTabsColorSchemes.defaults(
-            toolbarColor: theme.colorScheme.primary, 
-          ),
-          shareState: CustomTabsShareState.on,
-          urlBarHidingEnabled: true,
-          showTitle: true,
-          closeButton: CustomTabsCloseButton(
-            icon: CustomTabsCloseButtonIcons.back,
-          ),
-        ),
-
-        safariVCOptions: SafariViewControllerOptions(
-          preferredBarTintColor: theme.colorScheme.primary,
-          preferredControlTintColor: theme.colorScheme.onPrimary,
-          barCollapsingEnabled: true,
-          dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
-        ),
-      );
-    } catch (e) {
-      debugPrint('Erro ao abrir URL: $e'); // Imprime o erro se falhar
-    }
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text("Pagamento")),
+//       body: Center(
+//         child: ElevatedButton(
+//           onPressed: makePayment,
+//           child: Text("Pagar 0,4 reais"),
+          
+//         ),
+//       ),
+//     );
+//   }
+// }

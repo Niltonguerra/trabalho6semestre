@@ -8,6 +8,7 @@ class CardDetalhesViagem extends StatelessWidget {
   final String txt_vagas_disponiveis;
   final String txt_horario_partida;
   final String txt_horario_chegada;
+  final String txt_data_viagem;
   final String txt_preco_carona;
   final Color txt_cor_fundo;
   final Color txt_cor_sombra1;
@@ -19,6 +20,7 @@ class CardDetalhesViagem extends StatelessWidget {
     required this.txt_vagas_disponiveis,
     required this.txt_horario_partida,
     required this.txt_horario_chegada,
+    required this.txt_data_viagem,
     required this.txt_preco_carona,
     required this.txt_cor_fundo,
     required this.txt_cor_sombra1,
@@ -105,7 +107,32 @@ class CardDetalhesViagem extends StatelessWidget {
                 children: [
 
                   Text(
-                    'horário de partida:',
+                    'partida:',
+                    style: _getTextStyle(15, FontRes.ROBOTO_REGULAR),
+                  ),
+
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        txt_data_viagem,
+                        style: _getTextStyle(15, FontRes.ROBOTO_REGULAR),
+                      ),
+                      SizedBox(width: 5),
+                      Icon(Icons.access_time, size: 20, color: Colors.black),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 15),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+
+                  Text(
+                    'partida:',
                     style: _getTextStyle(15, FontRes.ROBOTO_REGULAR),
                   ),
 
@@ -130,7 +157,7 @@ class CardDetalhesViagem extends StatelessWidget {
                 children: [
 
                   Text(
-                    'horário de chegada previsto:',
+                    'chegada previsto:',
                     style: _getTextStyle(15, FontRes.ROBOTO_REGULAR),
                   ),
 

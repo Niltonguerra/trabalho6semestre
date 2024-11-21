@@ -100,6 +100,7 @@ class _DetalhesHistoricoPageState extends State<DetalhesHistoricoPage> {
                       txt_cor_fundo: fivethColor,
                       txt_cor_sombra1: fourthColor,
                       txt_cor_sombra2: fivethColor,
+                      txt_data_viagem: '11/10/2024',
                     ),
                     SizedBox(height: 15),
                     BtnGrande(

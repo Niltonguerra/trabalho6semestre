@@ -1,109 +1,131 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
-import 'package:mobile/core/utils/widgets_reutilizaveis/Buttons/BtnGrande.dart';
+import 'package:mobile/features/viagem/presentation/viewmodels/detalhes_viagem_viewmodel.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardCaroneiro.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardCarro.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardDetalhesViagem.dart';
+import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:provider/provider.dart';
 
 class DetalhesViagemPage extends StatefulWidget {
+  final String idViagem;
+
+  DetalhesViagemPage({required this.idViagem});
+
   @override
   _DetalhesViagemPageState createState() => _DetalhesViagemPageState();
 }
 
 class _DetalhesViagemPageState extends State<DetalhesViagemPage> {
+  late DetalhesViagemViewModel viewModel;
 
-  void _cadastrar() async {
-    // final result = await loginUseCase(
-    //   email: _emailController.text,
-    //   password: _senhaController.text,
-    // );
-    //
-    // print('Email: ${_emailController.text}'); // Corrigido para imprimir o email
-    //
-    // if (result) {
-    //   Navigator.pushNamed(context, '/second');
-    // } else {
-    //   showErrorDialog(context, 'Falha no cadastro. Verifique suas informações.');
-    // }
+  @override
+  void initState() {
+    super.initState();
+    viewModel = context.read<DetalhesViagemViewModel>();
+    _loadData();
   }
 
+  Future<void> _loadData() async {
+    await viewModel.carregarDados(widget.idViagem);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      backgroundColor: secondaryColor,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: thirdColor),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
-    ),
-      body: Scrollbar(
-        child: SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [thirdColor,secondaryColor],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
-            ),
-
-            child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-
-                  children: [
-                    CardCaroneiro(
-                      image: 'assets/images/user.png',
-                      txt_nome_caroneiro: 'Nome do Caroneiro',
-                      txt_avaliacao: '4.5',
-                      txt_cor_fundo: fivethColor,
-                      txt_cor_sombra1: fourthColor,
-                      txt_cor_sombra2: fivethColor,
-                      txt_email: 'teste@gmail.com',
-                      txt_telefone: '11 99999-9999',
-                    ),
-                    SizedBox(height: 15),
-                    CardCarro(
-                      image: 'assets/images/car.png',
-                      txt_modelo_carro: 'Nome do Caroneiro',
-                      txt_ano_carro: '2015',
-                      txt_cor_carro: 'Azul',
-                      txt_cor_fundo: fivethColor,
-                      txt_cor_sombra1: fourthColor,
-                      txt_cor_sombra2: fivethColor,
-                      txt_placa_carro: 'j213-312',
-                    ),
-                    SizedBox(height: 15),
-                    CardDetalhesViagem(
-                      txt_ponto_encontro: 'Rua Ulisses Guimarães,212, Jardim Rosas, Francisco Morato, SP, São Paulo, Brasil',
-                      txt_ponto_destino: 'Rua Ulisses Guimarães,212, Jardim Rosas, Francisco Morato, SP, São Paulo, Brasil',
-                      txt_vagas_disponiveis: '2',
-                      txt_horario_partida: '12:00',
-                      txt_horario_chegada: '13:00',
-                      txt_preco_carona: '11,00',
-                      txt_cor_fundo: fivethColor,
-                      txt_cor_sombra1: fourthColor,
-                      txt_cor_sombra2: fivethColor,
-                    ),
-                    SizedBox(height: 15),
-                    BtnGrande(
-                        onPressed: _cadastrar,
-                        txt_botao: 'Quero a Carona!',
-                        txt_cor_fundo: secondaryColor,
-                        txt_cor_texto: fivethColor
-                    ),
-                    SizedBox(height: 15),
-                  ],
-                )
-            ),
-          ),
+        backgroundColor: secondaryColor,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: thirdColor),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
+      body: Consumer<DetalhesViagemViewModel>(
+        builder: (context, viewModel, _) {
+          if (viewModel.isLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (viewModel.errorMessage != null) {
+            return Center(
+              child: Text(
+                viewModel.errorMessage!,
+                style: TextStyle(color: Colors.red),
+              ),
+            );
+          }
+
+          final viagem = viewModel.viagem;
+          final prestador = viewModel.prestador;
+
+          return viagem != null && prestador != null
+              ? Scrollbar(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [thirdColor, secondaryColor],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CardCaroneiro(
+                              image: 'assets/images/user.png',
+                              txt_nome_caroneiro: viagem.nomePrestador,
+                              txt_avaliacao: '${prestador.avaliacaoComoPrestador}',
+                              txt_email: prestador.email,
+                              txt_telefone: prestador.telefone,
+                              txt_cor_fundo: fivethColor,
+                              txt_cor_sombra1: fourthColor,
+                              txt_cor_sombra2: fivethColor,
+                            ),
+                            SizedBox(height: 15),
+                            CardCarro(
+                              image: 'assets/images/car.png',
+                              txt_modelo_carro: prestador.carro.modelo,
+                              txt_ano_carro: '${prestador.carro.ano}',
+                              txt_cor_carro: prestador.carro.cor,
+                              txt_placa_carro: prestador.carro.placa,
+                              txt_cor_fundo: fivethColor,
+                              txt_cor_sombra1: fourthColor,
+                              txt_cor_sombra2: fivethColor,
+                            ),
+                            SizedBox(height: 15),
+                            CardDetalhesViagem(
+                              txt_ponto_encontro: viagem.origem,
+                              txt_ponto_destino: viagem.destino,
+                              txt_vagas_disponiveis: '${viagem.quantidadeDeVagas}',
+                              txt_horario_partida: _formatHour(viagem.dataHoraPartida),
+                              txt_horario_chegada: _formatHour(viagem.dataHoraChegada),
+                              txt_preco_carona: '${viagem.custo}',
+                              txt_data_viagem: _formatDate(viagem.dataHoraPartida),
+                              txt_cor_fundo: fivethColor,
+                              txt_cor_sombra1: fourthColor,
+                              txt_cor_sombra2: fivethColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : Center(child: Text('Dados não carregados.'));
+        },
+      ),
     );
+  }
+
+  String _formatDate(String dateString) {
+    final dateTime = DateTime.parse(dateString);
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+  }
+
+  String _formatHour(String dateString) {
+    final dateTime = DateTime.parse(dateString);
+    return '${dateTime.hour}:${dateTime.minute}';
   }
 }

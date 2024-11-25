@@ -3,12 +3,12 @@
 // import 'package:http/http.dart' as http;
 // import 'dart:convert';
 
-// class PaymentPage extends StatefulWidget {
+// class TestePage extends StatefulWidget {
 //   @override
-//   _PaymentPageState createState() => _PaymentPageState();
+//   _TestePageState createState() => _TestePageState();
 // }
 
-// class _PaymentPageState extends State<PaymentPage> {
+// class _TestePageState extends State<TestePage> {
 //   Map<String, dynamic>? paymentIntentData;
 
 //   Future<void> makePayment() async {
@@ -43,7 +43,7 @@
 //     }
 //   }
 
-//   // Função para criar um Payment Intent chamando seu backend
+//   Função para criar um Payment Intent chamando seu backend
 //   Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency) async {
 //     try {
 //       final response = await http.post(
@@ -70,6 +70,8 @@
 //           },
 //           child: Text('Pay'),
 //         ),
+
+
 //       ),
 //     );
 //   }

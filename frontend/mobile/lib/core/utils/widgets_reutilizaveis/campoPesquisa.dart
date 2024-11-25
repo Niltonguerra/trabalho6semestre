@@ -1,6 +1,6 @@
 import 'package:mobile/res/font_res.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:mobile/core/variables/colors.dart';
 
 
 class SearchFieldWidget extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:mobile/res/font_res.dart';
 
 class MensagemDuasOpcoes extends StatelessWidget {
@@ -67,7 +67,6 @@ class MensagemDuasOpcoes extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo
                   onPressedBtn1(); // Executa a função passada como callback
                 },
                 child: Text(
@@ -88,7 +87,6 @@ class MensagemDuasOpcoes extends StatelessWidget {
               SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo
                   onPressedBtn2(); // Executa a função passada como callback
                 },
                 child: Text(
@@ -121,11 +119,9 @@ void mostrarMensagemDuasOpcoes(BuildContext context, VoidCallback onPressedBtn1,
     builder: (BuildContext context) {
       return MensagemDuasOpcoes(
         onPressedBtn1: () {
-          Navigator.of(context).pop(); // Fecha o diálogo
           onPressedBtn1(); // Executa a função passada como callback
         },
         onPressedBtn2: () {
-          Navigator.of(context).pop(); // Fecha o diálogo
           onPressedBtn2(); // Executa a função passada como callback
         },
         titulo: titulo,

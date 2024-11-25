@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
-import 'package:mobile/core/utils/widgets_reutilizaveis/CaixaDeTexto.dart';
-import 'package:mobile/features/login/domain/usecases/login_use_case.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile/features/login/presentation/viewmodels/login_viewmodel.dart';
+import 'package:mobile/core/utils/widgets_reutilizaveis/Input/CaixaDeTexto.dart';
+import 'package:mobile/core/utils/widgets_reutilizaveis/Input/InputSenha.dart';
 import 'package:mobile/features/login/presentation/widgets/error_dialog.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:mobile/res/font_res.dart';
-
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,6 +18,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<LoginViewModel>();
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -41,38 +44,42 @@ class _LoginPageState extends State<LoginPage> {
                 labelText: 'Email:',
               ),
               SizedBox(height: 20),
-              CaixaDeTexto(
+              InputSenha(
                 controller: _passwordController,
                 labelText: 'Senha:',
               ),
               SizedBox(height: 20),
-              Text(
-                'esqueceu a senha?',
-                style: TextStyle(fontFamily: FontRes.ROBOTO_REGULAR, fontSize: 15),
-              ),
+              if (viewModel.errorMessage != null)
+                Text(
+                  'Erro ao fazer login, tente novamente.',
+                  style: TextStyle(color: fourthColor, fontSize: 14),
+                ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => _login(),
-                child: Text(
-                  'Entrar!',
-                  style: TextStyle(fontFamily: FontRes.INTER_REGULAR),
-                ),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: fivethColor,
-                  backgroundColor: fourthColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  minimumSize: Size(168, 36),
-                ),
-              ),
+              viewModel.isLoading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _login,
+                      child: Text(
+                        'Entrar!',
+                        style: TextStyle(fontFamily: FontRes.INTER_REGULAR),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: fivethColor,
+                        backgroundColor: fourthColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        minimumSize: Size(168, 36),
+                      ),
+                    ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'novo por aqui? cadastre-se',
-                    style: TextStyle(fontFamily: FontRes.ROBOTO_REGULAR, fontSize: 15),
+                    'novo por aqui?',
+                    style: TextStyle(
+                        fontFamily: FontRes.ROBOTO_REGULAR, fontSize: 15),
                   ),
                   TextButton(
                     onPressed: () {
@@ -83,13 +90,12 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontFamily: FontRes.ROBOTO_REGULAR,
-                        color: secondaryColor, // Cor do texto
+                        color: secondaryColor,
                       ),
                     ),
                   ),
                 ],
               ),
-
             ],
           ),
         ),
@@ -98,15 +104,23 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() async {
-    final result = await loginUseCase(
+    final viewModel = context.read<LoginViewModel>();
+
+    final result = await viewModel.login(
       email: _emailController.text,
       password: _passwordController.text,
+      context: context,
     );
 
     if (result) {
-      Navigator.pushNamed(context, '/second');
+      final token = viewModel.response?.token;
+      Navigator.pushNamed(
+              context,
+              '/pesquisaViagem',
+      );
     } else {
-      showErrorDialog(context, 'Falha no login. Verifique suas credenciais.');
+      showErrorDialog(
+          context, viewModel.errorMessage ?? 'Erro ao fazer login.');
     }
   }
 }

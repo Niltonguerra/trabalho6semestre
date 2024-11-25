@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:mobile/res/font_res.dart';
 
 class ImagePickerWidget extends StatefulWidget {

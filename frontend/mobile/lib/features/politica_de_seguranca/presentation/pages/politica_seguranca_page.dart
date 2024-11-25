@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Buttons/BtnPreto.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Texto/TextoParagrafo.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Texto/TextoTitulo.dart';

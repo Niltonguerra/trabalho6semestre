@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardPersonalizado.dart';
 import 'package:mobile/res/font_res.dart';
 
@@ -9,7 +9,7 @@ class PesquisaHistoricoPage extends StatefulWidget {
 }
 
 class _PesquisaHistoricoPageState extends State<PesquisaHistoricoPage> {
-  final List<String> items = List.generate(7, (index) => 'Item $index');
+  final List<String> items = List.generate(1, (index) => 'Item $index');
   double _scrollOffset = 0.0;
   String _searchQuery = '';
 

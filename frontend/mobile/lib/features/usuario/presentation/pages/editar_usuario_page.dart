@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Buttons/BtnPreto.dart';
-import 'package:mobile/core/utils/widgets_reutilizaveis/CaixaDeTexto.dart';
+import 'package:mobile/core/utils/widgets_reutilizaveis/Input/CaixaDeTexto.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/InputImage.dart';
-import 'package:mobile/features/login/domain/usecases/login_use_case.dart';
 import 'package:mobile/features/login/presentation/widgets/error_dialog.dart';
 import 'package:mobile/res/font_res.dart';
 
@@ -120,17 +119,10 @@ class _EditarUsuarioPageState extends State<EditarUsuarioPage> {
   }
 
   void _cadastrar() async {
-    final result = await loginUseCase(
-      email: _emailController.text,
-      password: _senhaController.text,
-    );
+
 
     print('Email: ${_emailController.text}'); // Corrigido para imprimir o email
 
-    if (result) {
-      Navigator.pushNamed(context, '/second');
-    } else {
-      showErrorDialog(context, 'Falha no cadastro. Verifique suas informações.');
-    }
+
   }
 }

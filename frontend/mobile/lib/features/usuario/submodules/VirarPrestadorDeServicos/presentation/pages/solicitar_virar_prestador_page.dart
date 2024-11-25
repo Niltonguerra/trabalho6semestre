@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Buttons/BtnGrande.dart';
-import 'package:mobile/core/utils/widgets_reutilizaveis/CaixaDeTexto.dart';
+import 'package:mobile/core/utils/widgets_reutilizaveis/Input/CaixaDeTexto.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardCaroneiro.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardCarro.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardDetalhesViagem.dart';

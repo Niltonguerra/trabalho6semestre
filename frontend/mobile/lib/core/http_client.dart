@@ -3,12 +3,12 @@ import 'package:dio/dio.dart';
 class HttpClient {
   final Dio _dio;
 
-  HttpClient()
+  HttpClient({String? baseUrl})
       : _dio = Dio(
           BaseOptions(
-            baseUrl: 'http://192.168.18.19:3100',
-            connectTimeout: 5000, // 5 segundos
-            receiveTimeout: 5000, // 5 segundos
+            baseUrl: baseUrl ?? const String.fromEnvironment('API_URL', defaultValue: 'http://192.168.18.19:3100'),
+            connectTimeout: const Duration(milliseconds: 5000),
+            receiveTimeout: const Duration(milliseconds: 5000),
             headers: {
               'Content-Type': 'application/json',
             },
@@ -18,18 +18,15 @@ class HttpClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          // Adicionar lógica antes de enviar a requisição
-          print('Requisição: ${options.method} ${options.uri}');
+          // Lógica antes de enviar a requisição
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          // Adicionar lógica ao receber a resposta
-          print('Resposta: ${response.statusCode} ${response.data}');
+          // Lógica ao receber a resposta
           return handler.next(response);
         },
         onError: (DioError error, handler) {
-          // Adicionar lógica ao receber um erro
-          print('Erro: ${error.message}');
+          // Lógica ao receber um erro
           return handler.next(error);
         },
       ),

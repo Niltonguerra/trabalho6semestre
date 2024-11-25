@@ -1,38 +1,95 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:mobile/core/auth_provider.dart';
+import 'package:mobile/features/usuario/domain/entities/dono_usuario_entity.dart';
+import 'package:mobile/features/viagem/data/repositories/viagem_pesquisa_repository.dart';
 import 'package:mobile/features/viagem/domain/entities/viagem_entity.dart';
+import 'package:provider/provider.dart';
 
-class ViagemPesquisaService {
-  final http.Client client;
-  final String _baseUrl = const String.fromEnvironment(
-    'API_URL',
-    defaultValue: 'http://192.168.18.19:3100/viagem/listarTodos',
-  );
+class ViagemPesquisaViewModel with ChangeNotifier {
+  final ViagemPesquisaRepository repository;
 
-  ViagemPesquisaService({required this.client});
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
 
-  /// Lista todas as viagens.
-  Future<List<Viagem>> listarTodasViagens() async {
+  double get scrollOffset => _scrollOffset;
+  String get searchQuery => _searchQuery;
+  double _scrollOffset = 0.0;
+  String _searchQuery = '';
+
+  ViagemPesquisaViewModel({required this.repository});
+
+  List<Viagem> get viagensFiltradas {
+    if (_searchQuery.isEmpty) return _viagens;
+
+    final query = _searchQuery.toLowerCase();
+
+    return _viagens
+        .where((viagem) => viagem.destino.toLowerCase().contains(query))
+        .toList();
+  }
+
+  List<Viagem> _viagens = [];
+
+  /// Carrega todas as viagens do repositório.
+  Future<void> listarTodasViagens() async {
+    _setLoadingState(true);
     try {
-      final response = await client.get(Uri.parse(_baseUrl));
-
-      if (response.statusCode == 200) {
-        return _parseViagens(response.body);
-      } else {
-        throw Exception('Erro ao carregar dados: StatusCode ${response.statusCode}');
-      }
+      _viagens = await repository.listarTodasViagens();
+      _errorMessage = null;
     } catch (e) {
-      throw Exception('Erro ao carregar dados: $e');
+      _errorMessage = 'Erro ao carregar viagens. Verifique sua conexão.';
+    } finally {
+      _setLoadingState(false);
     }
   }
 
-  /// Faz o parse do JSON retornado pela API.
-  List<Viagem> _parseViagens(String responseBody) {
+  UsuarioDono _usuario = UsuarioDono(
+    nome: '',
+    email: '',
+    telefone: '',
+    foto: '',
+    dataNascimento: DateTime.now(),
+    endereco: [''],
+    avaliacaoComoCliente: 0,
+    historicoDeViagens: [],
+    cpf: '',
+    tipoConta: ''
+  );
+
+  UsuarioDono get usuario => _usuario;
+
+  Future<void> listarDadosUsuario(BuildContext context) async {
+    _setLoadingState(true);
     try {
-      final data = json.decode(responseBody)['ListarViagemDto'] as List;
-      return data.map((item) => Viagem.fromJson(item)).toList();
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final token = authProvider.token;
+
+      if (token == null || token.isEmpty) {
+        throw Exception('Token inválido ou ausente.');
+      }
+      _usuario = await repository.fetchDadosPessoais(token);
+      _errorMessage = null;
     } catch (e) {
-      throw FormatException('Erro ao parsear dados da API: $e');
+      _errorMessage = 'Erro ao carregar usuario. Verifique sua conexão.';
+    } finally {
+      _setLoadingState(false);
     }
+  }
+
+  void _setLoadingState(bool isLoading) {
+    _isLoading = isLoading;
+    notifyListeners();
+  }
+
+  set searchQuery(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
+
+  void updateScrollOffset(double offset) {
+    _scrollOffset = offset;
+    notifyListeners();
   }
 }

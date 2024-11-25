@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/utils/widgets_reutilizaveis/Buttons/BtnGrande.dart';
 import 'package:mobile/features/viagem/presentation/viewmodels/detalhes_viagem_viewmodel.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardCaroneiro.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardCarro.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardDetalhesViagem.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:provider/provider.dart';
 
 class DetalhesViagemPage extends StatefulWidget {
@@ -16,17 +17,19 @@ class DetalhesViagemPage extends StatefulWidget {
 }
 
 class _DetalhesViagemPageState extends State<DetalhesViagemPage> {
-  late DetalhesViagemViewModel viewModel;
+
+  
+  late ViagemDetalhesViewModel viewModel;
 
   @override
   void initState() {
     super.initState();
-    viewModel = context.read<DetalhesViagemViewModel>();
+    viewModel = context.read<ViagemDetalhesViewModel>();
     _loadData();
   }
 
   Future<void> _loadData() async {
-    await viewModel.carregarDados(widget.idViagem);
+    await viewModel.carregarDados(widget.idViagem, context);
   }
 
   @override
@@ -39,7 +42,7 @@ class _DetalhesViagemPageState extends State<DetalhesViagemPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: Consumer<DetalhesViagemViewModel>(
+      body: Consumer<ViagemDetalhesViewModel>(
         builder: (context, viewModel, _) {
           if (viewModel.isLoading) {
             return Center(child: CircularProgressIndicator());
@@ -107,6 +110,14 @@ class _DetalhesViagemPageState extends State<DetalhesViagemPage> {
                               txt_cor_sombra1: fourthColor,
                               txt_cor_sombra2: fivethColor,
                             ),
+                            SizedBox(height: 15),
+                              BtnGrande(
+                                  onPressed: (){},
+                                  txt_botao: 'Quero a Carona!',
+                                  txt_cor_fundo: secondaryColor,
+                                  txt_cor_texto: fivethColor
+                              ),
+                              SizedBox(height: 15),
                           ],
                         ),
                       ),

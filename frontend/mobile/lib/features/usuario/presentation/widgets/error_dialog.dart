@@ -5,7 +5,7 @@ void showErrorDialog(BuildContext context, String message) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Erro'),
+        title: Text('Mensagem'),
         content: Text(message),
         actions: <Widget>[
           TextButton(

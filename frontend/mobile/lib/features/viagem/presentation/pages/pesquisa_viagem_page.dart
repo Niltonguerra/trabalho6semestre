@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:mobile/core/utils/widgets_reutilizaveis/campoPesquisa.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:mobile/core/utils/widgets_reutilizaveis/Cards/CardPersonalizado.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
-import 'package:mobile/features/viagem/domain/entities/viagem_entity.dart';
+import 'package:mobile/core/utils/widgets_reutilizaveis/campoPesquisa.dart';
 import 'package:mobile/features/viagem/presentation/viewmodels/pesquisa_viagem_viewmodel.dart';
-import 'package:http/http.dart' as http;
-
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class PesquisaViagemPage extends StatefulWidget {
   @override
@@ -15,149 +12,177 @@ class PesquisaViagemPage extends StatefulWidget {
 }
 
 class _PesquisaViagemPageState extends State<PesquisaViagemPage> {
-  final ViagemPesquisaService _viagemService = ViagemPesquisaService(client: http.Client());
-  List<Viagem> items = [];
-  bool _isLoading = true;
-  String? _errorMessage;
-  double _scrollOffset = 0.0;
-  String _searchQuery = '';
-
   @override
-  void initState() {
-    super.initState();
-    _fetchData();
-  }
-
-  /// Formata a data para exibição no formato `dd/MM/yyyy HH:mm`.
-  String formatDate(String dateString) {
-    return DateFormat('dd/MM HH:mm').format(DateTime.parse(dateString));
-  }
-
-  /// Busca os dados e atualiza o estado.
-  Future<void> _fetchData() async {
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final viagens = await _viagemService.listarTodasViagens();
-      setState(() {
-        items = viagens;
-        _errorMessage = null;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  /// Cria o AppBar da tela.
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: thirdColor,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: secondaryColor),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Text('Nome do usuário', style: TextStyle(color: fivethColor)),
-          SizedBox(width: 10),
-          Icon(Icons.person, color: fivethColor, size: 40),
-        ],
-      ),
-    );
-  }
-
-  /// Cria o campo de pesquisa.
-  Widget _buildSearchField() {
-    return SearchFieldWidget(
-      onChanged: (query) {
-        setState(() {
-          _searchQuery = query;
-        });
-      },
-      initialQuery: _searchQuery,
-      scrollOffset: _scrollOffset,
-    );
-  }
-
-  /// Cria a lista de itens.
-  Widget _buildListView() {
-    return ListView.builder(
-      padding: EdgeInsets.only(top: 160),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-
-        if (_searchQuery.isEmpty ||
-            item.destino.toLowerCase().contains(_searchQuery.toLowerCase())) {
-          return CardPersonalizado(
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                '/detalhesViagem',
-                arguments: {
-                  'idViagem': item.id, 
-                  },
-              );
-            },
-            txt_destino: 'Destino: ${item.destino}',
-            txt_vagas: '${item.quantidadeDeVagas} Vagas',
-            txt_horarioPartida: formatDate(item.dataHoraPartida),
-            txt_preco: item.custo,
-            txt_cor_fundo: fivethColor,
-            txt_cor_sombra1: fivethColor,
-            txt_cor_sombra2: fourthColor,
-          );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+      Future.microtask(() {
+        final viewModel = context.read<ViagemPesquisaViewModel>();
+        if (!viewModel.isLoading && viewModel.viagensFiltradas.isEmpty) {
+          viewModel.listarTodasViagens();
+          viewModel.listarDadosUsuario(context);
         }
-
-        return SizedBox.shrink();
-      },
-    );
-  }
-
-  /// Cria o corpo da tela com o comportamento de scroll e o campo de pesquisa.
-  Widget _buildBody() {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scrollInfo) {
-        if (scrollInfo is ScrollUpdateNotification) {
-          setState(() {
-            _scrollOffset = scrollInfo.metrics.pixels;
-          });
-        }
-        return true;
-      },
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [secondaryColor, thirdColor],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-              ),
-            ),
-            child: _buildListView(),
-          ),
-          _buildSearchField(),
-        ],
-      ),
-    );
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: _buildBody(),
+      body: Consumer<ViagemPesquisaViewModel>(
+        builder: (context, viewModel, _) {
+          if (viewModel.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (viewModel.errorMessage != null) {
+            return _buildErrorMessage(viewModel.errorMessage!);
+          }
+
+          return _buildBody(viewModel);
+        },
+      ),
     );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      backgroundColor: thirdColor,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: secondaryColor),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      title: Consumer<ViagemPesquisaViewModel>(
+        builder: (context, viewModel, _) {
+
+           final nomeUsuario = viewModel.usuario.nome.isNotEmpty
+            ? viewModel.usuario.nome
+            : 'Usuário';
+
+             final fotoUsuario = viewModel.usuario.foto.isNotEmpty
+            ? viewModel.usuario.foto
+            : 'assets/images/user.png';
+
+
+          return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/gerenciarConta'); // Substitua pela rota desejada
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                nomeUsuario,
+                style: const TextStyle(color: fivethColor),
+              ),
+              const SizedBox(width: 10),
+              _buildUserAvatar(fotoUsuario),
+            ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildUserAvatar(String imageUrl) {
+    return Center(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(500.0),
+        child: Image.network(
+          imageUrl,
+          width: 35,
+          height: 35,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 35),
+          loadingBuilder: (_, child, progress) {
+            if (progress == null) return child;
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorMessage(String errorMessage) {
+    return Center(
+      child: Text(
+        errorMessage,
+        style: const TextStyle(color: Colors.red, fontSize: 16),
+      ),
+    );
+  }
+
+  Widget _buildBody(ViagemPesquisaViewModel viewModel) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollInfo) {
+        if (scrollInfo is ScrollUpdateNotification) {
+          viewModel.updateScrollOffset(scrollInfo.metrics.pixels);
+        }
+        return true;
+      },
+      child: Stack(
+        children: [
+          _buildGradientBackground(viewModel),
+          _buildSearchField(viewModel),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGradientBackground(ViagemPesquisaViewModel viewModel) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [secondaryColor, thirdColor],
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+        ),
+      ),
+      child: _buildListView(viewModel),
+    );
+  }
+
+  Widget _buildSearchField(ViagemPesquisaViewModel viewModel) {
+    return SearchFieldWidget(
+      onChanged: (query) => viewModel.searchQuery = query,
+      initialQuery: viewModel.searchQuery,
+      scrollOffset: viewModel.scrollOffset,
+    );
+  }
+
+  Widget _buildListView(ViagemPesquisaViewModel viewModel) {
+    if (viewModel.viagensFiltradas.isEmpty) {
+      return const Center(child: Text('Nenhuma viagem encontrada.'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 160),
+      itemCount: viewModel.viagensFiltradas.length,
+      itemBuilder: (context, index) {
+        final item = viewModel.viagensFiltradas[index];
+        return CardPersonalizado(
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              '/detalhesViagem',
+              arguments: {'idViagem': item.id},
+            );
+          },
+          txt_destino: 'Destino: ${item.destino}',
+          txt_vagas: '${item.quantidadeDeVagas} Vagas',
+          txt_horarioPartida: _formatDate(item.dataHoraPartida),
+          txt_preco: item.custo,
+          txt_cor_fundo: fivethColor,
+          txt_cor_sombra1: fivethColor,
+          txt_cor_sombra2: fourthColor,
+        );
+      },
+    );
+  }
+
+  String _formatDate(String dateString) {
+    return DateFormat('dd/MM HH:mm').format(DateTime.parse(dateString));
   }
 }

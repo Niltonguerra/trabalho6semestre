@@ -1,35 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/viagem/data/viagem_repository.dart';
+import 'package:mobile/core/auth_provider.dart';
+import 'package:mobile/features/viagem/data/repositories/viagem_detalhes_repository.dart';
+import 'package:mobile/features/usuario/domain/entities/prestador_entity.dart';
 import 'package:mobile/features/viagem/domain/entities/viagem_entity.dart';
-import 'package:mobile/features/viagem/domain/entities/prestador_entity.dart';
+import 'package:provider/provider.dart';
 
-class DetalhesViagemViewModel with ChangeNotifier {
-  final ViagemRepository viagemRepository;
+class ViagemDetalhesViewModel with ChangeNotifier {
+  final ViagemDetalhesRepository repository;
+
   Viagem? _viagem;
   Prestador? _prestador;
   String? _errorMessage;
   bool _isLoading = false;
 
-  DetalhesViagemViewModel({required this.viagemRepository});
+  ViagemDetalhesViewModel({required this.repository});
 
   Viagem? get viagem => _viagem;
   Prestador? get prestador => _prestador;
   String? get errorMessage => _errorMessage;
   bool get isLoading => _isLoading;
 
-  Future<void> carregarDados(String idViagem) async {
+  Future<void> carregarDados(String idViagem, BuildContext context) async {
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
     try {
+
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final token = authProvider.token;
+
+      if (token == null || token.isEmpty) {
+        throw Exception('Token inválido ou ausente.');
+      }
+
       // Buscar dados da viagem
-      _viagem = await viagemRepository.fetchViagem(idViagem, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pbHRvbmRnLjMwQGdtYWlsLmNvbSIsImlkIjoiNjcyM2M4MDE4YWJlYTFlYjYwMDUwZDUyIiwiaWF0IjoxNzMwODQyODU5fQ.JGVYjvotckURO3HoSVHE9yBgupE83Zwa8-fgqJVkkXA');
+      _viagem = await repository.fetchViagem(idViagem, token);
       
       // Buscar dados do prestador usando o nome da viagem
       if (_viagem != null) {
-        _prestador = await viagemRepository.fetchPrestadorPorNome(
+        _prestador = await repository.fetchPrestadorPorNome(
           _viagem!.nomePrestador,
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pbHRvbmRnLjMwQGdtYWlsLmNvbSIsImlkIjoiNjcyM2M4MDE4YWJlYTFlYjYwMDUwZDUyIiwiaWF0IjoxNzMwODQyODU5fQ.JGVYjvotckURO3HoSVHE9yBgupE83Zwa8-fgqJVkkXA',
+          token,
         );
       }
       _errorMessage = null;

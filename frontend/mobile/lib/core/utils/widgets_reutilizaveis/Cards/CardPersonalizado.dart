@@ -1,7 +1,7 @@
 // lib/widgets/BtnPreto.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobile/core/utils/variables/colors.dart';
+import 'package:mobile/core/variables/colors.dart';
 import 'package:mobile/res/font_res.dart';
 
 class CardPersonalizado extends StatelessWidget {

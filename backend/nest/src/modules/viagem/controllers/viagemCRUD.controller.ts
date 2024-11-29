@@ -57,7 +57,7 @@ export class ViagemCRUDController {
   }
 
   // Rota para listar todas as viagens
-  @UseGuards(JwtAuthGuardUser, RolesGuardUser)
+  // @UseGuards(JwtAuthGuardUser, RolesGuardUser)
   @Get('listarTodos')
   async listaTodasAsViagens(): Promise<{ MensagemRetornoDTO, ListarViagemDto }> {
     try {

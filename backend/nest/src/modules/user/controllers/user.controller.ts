@@ -23,7 +23,7 @@ import { EmailService } from 'src/modules/email/services/email.service';
 import { RedisHashService } from 'src/modules/redis/services/redisHash.service';
 import { JwtAuthGuardUser } from '../Guards/jwtAuthUser.guard';
 import { RolesGuardUser } from '../Guards/rolesUser.guard';
-
+import * as moment from 'moment';
 
 @Controller('usuario')
 export class UserController {
@@ -65,6 +65,13 @@ export class UserController {
   @UsePipes(new ValidationPipe(), HashPasswordPipe)
   async create(@Body() user: CriaUsuarioDTO): Promise<MensagemRetornoDTO> {
 
+
+    const dataConvertida = moment(user.data_nascimento, 'DD/MM/YYYY').toDate();
+    user.data_nascimento = dataConvertida;
+
+
+
+
     const verificaEmail:ListaUsuarioPublicoDTO[] = await this.service.findByField('email', user.email);
     if (verificaEmail.length > 0) {
       throw new ConflictException('Email já cadastrado');
@@ -82,7 +89,7 @@ export class UserController {
 
      return {
         mensagem: "Cadastro realizado com sucesso, verifique seu e-mail em até 1 hora para ativar sua conta",
-        statusCode: 200,
+        statusCode: 201,
         dadosUsuario: {
           email: user.email,
           nome: user.nome,

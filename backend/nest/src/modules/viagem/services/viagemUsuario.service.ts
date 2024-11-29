@@ -3,18 +3,26 @@ import { Injectable, NotFoundException, InternalServerErrorException } from '@ne
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Viagem } from '../entities/viagem.entity';
-import { MensagemRetornoDTO } from '../dtos/Mensagens.dto';
+import { MensagemRetornoDTO, MensagemSolicitarCaronaDTO } from '../dtos/Mensagens.dto';
 import { UsuarioService } from 'src/modules/user/services/user.service';
+import { Message, MessageDocument } from 'src/modules/chat/schemas/message.schema';
+import { ChatRoom, ChatRoomDocument } from 'src/modules/chat/schemas/chatRoom.schema';
 
 @Injectable()
 export class ViagemUsuarioService {
   constructor(
     @InjectModel('viagens') private viagemModel: Model<Viagem>,
     private readonly usuarioService: UsuarioService,
+    @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
+    @InjectModel(ChatRoom.name) private chatRoomModel: Model<ChatRoomDocument>,
   ) {}
 
   // Lista uma única viagem por ID
-  async listarUmViagem(idViagem: string): Promise<{MensagemRetornoDTO,ListarViagemDto}> {
+  async listarUmViagem(idViagem: string): Promise<{
+    MensagemRetornoDTO:MensagemRetornoDTO;
+    ListarViagemDto:ListarViagemDto;
+  }> {
+    
     try {
       const viagem = await this.viagemModel.findById(idViagem).exec();
 
@@ -27,7 +35,8 @@ export class ViagemUsuarioService {
           mensagem: 'Viagem encontrada',
           statusCode: 200,
         },
-        ListarViagemDto: {
+          ListarViagemDto: {
+          _id: viagem._id.toString(),
           custo: viagem.custo,
           origem: viagem.origem,
           destino: viagem.destino,
@@ -35,6 +44,7 @@ export class ViagemUsuarioService {
           data_hora_chegada: viagem.data_hora_chegada,
           quantidade_de_vagas: viagem.quantidade_de_vagas,
           nome_prestador: viagem.nome_prestador,
+          id_usuarios: viagem.id_usuarios,
         }
       };
 
@@ -45,7 +55,10 @@ export class ViagemUsuarioService {
   }
 
   // Lista todas as viagens de um usuário específico
-  async listaTodasAsViagensPorUsuario(idUsuario: string): Promise<{MensagemRetornoDTO, ListarViagemDto}> {
+  async listaTodasAsViagensPorUsuario(idUsuario: string): Promise<{
+    MensagemRetornoDTO:MensagemRetornoDTO; 
+    ListarViagemDto?:ListarViagemDto[];
+  }> {
     try {
 
       const viagens = await this.viagemModel.find({id_usuarios: { $in: [idUsuario] } }).exec();
@@ -56,7 +69,6 @@ export class ViagemUsuarioService {
             mensagem: 'Nenhuma viagem encontrada',
             statusCode: 404,
           },
-          ListarViagemDto: [],
         };
       }
 
@@ -86,7 +98,7 @@ export class ViagemUsuarioService {
   }
 
 
-  async solicitarViagem(idViagem: string, usuarioId: string): Promise<MensagemRetornoDTO> {
+  async solicitarViagem(idViagem: string, usuarioId: string): Promise<MensagemSolicitarCaronaDTO> {
     try {
       // Busca a viagem pelo ID
       const viagem = await this.viagemModel.findById(idViagem).exec();
@@ -125,10 +137,10 @@ export class ViagemUsuarioService {
       // Retorna mensagem de sucesso
       return {
         mensagem: 'Viagem solicitada com sucesso pelo usuário',
-        statusCode: 201,
+        statusCode: 200,
         dadosViagem: {
-          idViagem: viagem._id,
-          nomePrestador: viagem.nome_prestador,
+          idViagem: viagem._id.toString(),
+          idsUsuarios:viagem.id_usuarios,
         },
       };
   

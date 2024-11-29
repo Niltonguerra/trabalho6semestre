@@ -1,4 +1,4 @@
-import { NotFoundException, InternalServerErrorException, Logger, Injectable } from '@nestjs/common';
+import { NotFoundException, InternalServerErrorException, Logger, Injectable, HttpException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ListaUsuarioPessoalDTO,ListaUsuarioPublicoDTO } from '../dtos/usuario/ListaUsuario.dto';
@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Usuario } from '../entities/user.entity';
 import { LoginUsuarioInternoDTO } from '../dtos/autenticacao/AuthUser.dto';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 
 
@@ -63,13 +64,7 @@ export class UsuarioService {
   async findByEmail(valor: string): Promise<LoginUsuarioInternoDTO | null> {
     try {
       // Pesquisa pelo email no modelo Mongoose
-      const pesquisa: Usuario | null = await this.usuarioModel.findOne({ email: valor }).exec();
-
-      // Verifica se nenhum usuário foi encontrado
-      if (!pesquisa) {
-        console.error('Usuário não encontrado para o email informado:', valor);
-        throw new Error('email incorreto');
-      }
+      const pesquisa: Usuario | any = await this.usuarioModel.findOne({ email: valor }).exec();
 
       const retorno:LoginUsuarioInternoDTO = {
         _id: pesquisa._id.toString(),
@@ -82,7 +77,7 @@ export class UsuarioService {
       
     } catch (error) {
       console.error('Erro ao tentar encontrar usuário pelo email:', error);
-      throw new Error('Erro ao tentar encontrar usuário pelo email');
+      throw new HttpException('Erro ao tentar encontrar usuário pelo email', 400);
     }
   }
 

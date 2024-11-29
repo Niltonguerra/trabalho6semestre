@@ -16,8 +16,8 @@ export class ListaPrestadorPublicoDTO {
   id_viagens: string[];
 }
 
-
 export class ListaPrestadorPessoalDTO {
+  id:string;
   nome: string;
   CPF: string;
   data_nascimento: Date;

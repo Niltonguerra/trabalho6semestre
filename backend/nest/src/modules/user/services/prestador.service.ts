@@ -28,6 +28,7 @@ export class PrestadorService {
       }
 
       const retorno:ListaPrestadorPessoalDTO = {
+        id: Prestador._id.toString(),
         nome: Prestador.nome,
         email: Prestador.email,
         telefone: Prestador.telefone,
@@ -74,6 +75,7 @@ export class PrestadorService {
         CRLV: Prestador.CRLV,
         DPVAT: Prestador.DPVAT,
         foto_CNH: Prestador.foto_CNH,
+        avaliacao_como_prestador: 3,
         tipo_conta: "prestador",
       }
       const updatedPrestador: Usuario | null = await this.userModel.findByIdAndUpdate(id, tornaPrestador, { new: true }).exec();

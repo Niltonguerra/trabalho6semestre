@@ -11,6 +11,7 @@ import { UserModule } from './modules/user/user.module';
 import { HistoricoModule } from './modules/historico/historico.module';
 import { ProductModule } from './modules/product/product.module';
 import { ViagemModule } from './modules/viagem/viagem.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ViagemModule } from './modules/viagem/viagem.module';
     HistoricoModule,
     ProductModule,
     ViagemModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [

@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ProductSchema } from './entities/product.entity';
 import { ServiceProductForStore } from './services/productStore.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserSchema } from '../user/entities/user.entity';
+import { UsuarioSchema } from '../user/entities/user.entity';
 import { PrestadorService } from '../user/services/prestador.service';
 import { RolesGuardUser } from '../user/Guards/rolesUser.guard';
 import { JwtAuthGuardUser } from '../user/Guards/jwtAuthUser.guard';
@@ -15,7 +15,7 @@ import { JwtAuthGuardUser } from '../user/Guards/jwtAuthUser.guard';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
-    MongooseModule.forFeature([{ name: 'usuario', schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: 'usuario', schema: UsuarioSchema }]),
   ],
   controllers: [ProductController],
   providers: [

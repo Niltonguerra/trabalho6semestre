@@ -53,6 +53,7 @@ export class AuthUserService {
   private async validateUser(email: string, senha: string): Promise<LoginUsuarioInternoDTO> {
  
     const user:LoginUsuarioInternoDTO = await this.UsuarioService.findByEmail(email);
+
     const isMatch = bcrypt.compare(senha, user.senha);
 
     if (user === null || !isMatch) {

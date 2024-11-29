@@ -19,7 +19,7 @@ export class HistoricoController {
   }
 
   @UseGuards(JwtAuthGuardUser, RolesGuardUser)
-  @Get('listaHistorico/:nome')
+  @Get('listaHistorico')
   async findProductsWithStore(@Request() req) {
 
     const id = req.user.userId;
@@ -32,25 +32,25 @@ export class HistoricoController {
   
   }
 
-  @Get()
+  @Get('todos')
   findAll() {
     return this.historicoService.findAll();
   }
 
 
-  @Get(':id')
+  @Get('buscarUm/:id')
   findOne(@Param('id') id: string) {
     return this.historicoService.findOne(id);
   }
 
 
-  @Post()
+  @Post('criar')
   create(@Body() createHistoricoDto: CreateHistoricoDto) {
     return this.historicoService.create(createHistoricoDto);
   }
 
 
-  @Put(':id')
+  @Put('atualizar/:id')
   update(
     @Param('id') id: string,
     @Body() updateHistoricoDto: UpdateHistoricoDto,

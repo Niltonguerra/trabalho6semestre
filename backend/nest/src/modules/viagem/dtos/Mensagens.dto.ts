@@ -16,3 +16,12 @@ export class MensagemRetornoDTO {
   mensagem: string;
   dadosViagem?: ListaDadosRetornoDTO;
 }
+
+export class MensagemSolicitarCaronaDTO {
+  statusCode: number;
+  mensagem: string;
+  dadosViagem: {
+    idsUsuarios: string[];
+    idViagem: string;
+  }
+}

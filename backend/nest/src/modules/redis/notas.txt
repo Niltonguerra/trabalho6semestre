@@ -1,0 +1,2 @@
+comando para baixar um pacote para usar o nest com o redis:
+ npm install ioredis
